@@ -274,6 +274,85 @@
       "premiums": [],
       "transactions": []
     },
+    "5093364": {
+      "planRef": "5093364",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "11",
+      "status": "Live",
+      "startDate": "05/03/2013",
+      "holder": { "name": "Mr Alan Brennan", "niNumber": "QQ509336A", "dob": "09/02/1965", "address": "18 Prior Park Road, Bath, BA2 4NG" },
+      "adviser": { "agency": "AG-6604", "name": "Kestrel Financial Planning", "since": "05/03/2013" },
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [],
+      "charges": [
+        { "charge": "Annual management charge", "rate": "0.85%", "basis": "% of fund value p.a.", "applies": true, "notes": "" },
+        { "charge": "Policy fee", "rate": "", "basis": "", "applies": false, "notes": "" },
+        { "charge": "Adviser charge (ongoing)", "rate": "0.50%", "basis": "% of fund value p.a.", "applies": true, "notes": "Paid to agency AG-6604" }
+      ],
+      "historicCharges": [],
+      "valuations": [
+        { "date": "15/10/2026", "funds": [
+          { "fund": "1012", "units": 11875.4200, "price": 3.4120 },
+          { "fund": "7744", "units": 3402.1100, "price": 3.0021 },
+          { "fund": "2214", "units": 2150.0000, "price": 1.3315 }
+        ] }
+      ],
+      "investments": [
+        { "fund": "1105", "status": "Closed", "closedDate": "11/06/2019" },
+        { "fund": "1012", "status": "Current" },
+        { "fund": "7744", "status": "Current" },
+        { "fund": "2214", "status": "Current" }
+      ],
+      "premiums": [
+        { "period": "May 2026", "due": "05/05/2026", "received": "05/05/2026", "employee": "£250.00", "employer": "", "type": "Regular (direct debit)" },
+        { "period": "June 2026", "due": "05/06/2026", "received": "05/06/2026", "employee": "£250.00", "employer": "", "type": "Regular (direct debit)" },
+        { "period": "July 2026", "due": "05/07/2026", "received": "05/07/2026", "employee": "£250.00", "employer": "", "type": "Regular (direct debit)" },
+        { "period": "August 2026", "due": "05/08/2026", "received": "05/08/2026", "employee": "£250.00", "employer": "", "type": "Regular (direct debit)" },
+        { "period": "Single", "due": "-", "received": "20/08/2026", "employee": "£2,000.00", "employer": "", "type": "Single contribution (bank transfer)" },
+        { "period": "September 2026", "due": "05/09/2026", "received": "05/09/2026", "employee": "£250.00", "employer": "", "type": "Regular (direct debit)" },
+        { "period": "October 2026", "due": "05/10/2026", "received": "05/10/2026", "employee": "£250.00", "employer": "", "type": "Regular (direct debit)" }
+      ],
+      "transactions": [
+        { "date": "20/08/2026", "type": "Single contribution", "amount": "£2,000.00" }
+      ]
+    },
+    "3871205": {
+      "planRef": "3871205",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "10",
+      "status": "Live",
+      "startDate": "14/09/2007",
+      "holder": { "name": "Mrs Carol Pemberton", "niNumber": "QQ387120C", "dob": "27/05/1962", "address": "9 Linden Avenue, Taunton, TA1 4QR" },
+      "adviser": null,
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [ { "date": "08/04/2026", "text": "Cheque for £3,000.00 received (posted 27/03/2026). Applied as a single contribution to Aegon Managed Pn on 08/04/2026." } ],
+      "charges": [
+        { "charge": "Annual management charge", "rate": "1.00%", "basis": "% of fund value p.a.", "applies": true, "notes": "" },
+        { "charge": "Early exit charge", "rate": "", "basis": "", "applies": false, "notes": "" }
+      ],
+      "historicCharges": [],
+      "valuations": [
+        { "date": "05/04/2025", "funds": [ { "fund": "1012", "units": 9640.0000, "price": 3.0410 }, { "fund": "2214", "units": 4210.5000, "price": 1.2650 } ] },
+        { "date": "05/04/2026", "funds": [ { "fund": "1012", "units": 9640.0000, "price": 3.2150 }, { "fund": "2214", "units": 4210.5000, "price": 1.3010 } ] },
+        { "date": "15/10/2026", "funds": [ { "fund": "1012", "units": 10571.6770, "price": 3.4120 }, { "fund": "2214", "units": 4210.5000, "price": 1.3315 } ] }
+      ],
+      "investments": [
+        { "fund": "1012", "status": "Current" },
+        { "fund": "2214", "status": "Current" }
+      ],
+      "premiums": [
+        { "period": "Single", "due": "-", "received": "08/04/2026", "employee": "£3,000.00", "employer": "", "type": "Single contribution (cheque)" }
+      ],
+      "transactions": [
+        { "date": "08/04/2026", "type": "Single contribution (cheque) - 931.6770 units Aegon Managed Pn at £3.2200", "amount": "£3,000.00" }
+      ]
+    },
     "6139052": {
       "planRef": "6139052",
       "productName": "Aegon Personal Pension",

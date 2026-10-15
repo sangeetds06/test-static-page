@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer lookup</title>
+<link rel="stylesheet" href="../style.css">
+<script src="../common.js"></script>
+<script src="data.js"></script>
+</head>
+<body data-page="lookup">
+<header class="topbar"><a class="brand" href="../index.html" style="color:#fff">Northern Mutual Service Desk</a><span>Customer requests</span><span class="spacer"></span><span>agent.k.holm</span></header>
+<main class="page">
+  <section class="task">
+    <h2>Request from the Complaints team</h2>
+    <p>We are opening a complaint for <b>Marta Lindqvist</b> of <b>Gothenburg</b>, date of birth <b>22/05/1972</b>. Please look her up,
+      then copy her <b>account number</b>, her <b>preferred contact channel</b> and her current <b>AML risk score</b> from her customer record
+      into the complaint intake form on this page, and submit it.</p>
+  </section>
+
+  <div class="panel">
+    <h1>Customer search</h1>
+    <form id="searchForm" class="toolbar" style="justify-content:flex-start">
+      <input type="text" id="q" placeholder="Name or customer ID" style="width:280px" aria-label="Search customers">
+      <button type="submit">Search</button>
+    </form>
+    <div id="results" style="margin-top:10px"></div>
+  </div>
+
+  <form class="panel" id="intake" novalidate>
+    <h2 style="margin-top:0">Complaint intake</h2>
+    <div id="banner"></div>
+    <div class="field-row"><label for="custId">Customer ID</label><input type="text" id="custId" placeholder="CUS-......"></div>
+    <div class="field-row"><label for="account">Account number *</label><input type="text" id="account" style="width:260px"></div>
+    <div class="field-row"><label for="channel">Preferred contact channel *</label><input type="text" id="channel"></div>
+    <div class="field-row"><label for="risk">AML risk score *</label><input type="text" id="risk" style="width:90px"></div>
+    <div class="field-row"><label for="summary">Complaint summary</label><textarea id="summary" style="max-width:420px"></textarea></div>
+    <button type="submit" id="submitBtn">Create complaint</button>
+  </form>
+  <div class="panel" id="done" hidden></div>
+</main>
+<div class="toast" id="toast" role="alert" hidden></div>
+<script src="interrupts.js"></script>
+<script>
+(function () {
+  const $ = function (id) { return document.getElementById(id); };
+
+  // ----- Search -----
+  $('searchForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const q = $('q').value.trim().toLowerCase();
+    if (q.length < 2) { $('results').innerHTML = '<p class="muted">Enter at least 2 characters.</p>'; return; }
+    $('results').innerHTML = '<span class="spinner"></span>Searching...';
+    setTimeout(function () {
+      const hits = CustomerData.customers.filter(function (c) { return c.name.toLowerCase().indexOf(q) !== -1 || c.id.toLowerCase() === q; });
+      $('results').innerHTML = hits.length
+        ? '<table><thead><tr><th>Customer</th><th>Customer ID</th><th>City</th><th>Postcode</th></tr></thead><tbody>' +
+          hits.map(function (c) {
+            return '<tr><td><a href="detail.html?id=' + c.id + '" target="_blank" rel="noopener">' + Gym.esc(c.name) + '</a></td><td>' + c.id +
+              '</td><td>' + Gym.esc(c.city) + '</td><td>' + Gym.esc(c.postcode) + '</td></tr>';
+          }).join('') + '</tbody></table><p class="muted">Customer records open in a new tab.</p>'
+        : '<p class="muted">No customers found.</p>';
+    }, 600);
+  });
+
+  // ----- Session expiry toast -----
+  const WARN_AFTER_MS = 12000, GRACE_MS = 90000;
+  let deadline = null, extended = false, expired = false, tick = null;
+  function showToast() {
+    deadline = Date.now() + GRACE_MS;
+    $('toast').hidden = false;
+    tick = setInterval(update, 1000);
+    update();
+  }
+  function update() {
+    if (expired || deadline === null) return;
+    const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+    if (left === 0) return expire();
+    $('toast').innerHTML = '<b>Your session will expire soon</b><div>You will be signed out in ' + left + ' s. Unsaved form data will be lost.</div>' +
+      '<button type="button" id="extend">Extend session</button>';
+  }
+  $('toast').addEventListener('click', function (e) {
+    if (e.target.id !== 'extend') return;
+    clearInterval(tick);
+    deadline = null;
+    extended = true;
+    $('toast').hidden = true;
+    Gym.record('interrupts', 'session-extended', null);
+  });
+  function expire() {
+    expired = true;
+    clearInterval(tick);
+    $('toast').hidden = true;
+    Gym.record('interrupts', 'session-expired', null);
+    ['custId', 'account', 'channel', 'risk', 'summary'].forEach(function (id) { $(id).value = ''; $(id).disabled = true; });
+    $('submitBtn').disabled = true;
+    $('banner').innerHTML = '<div class="error"><b>Your session expired.</b> The form was cleared. <button type="button" id="resume" class="secondary">Sign in again</button></div>';
+  }
+  $('banner').addEventListener('click', function (e) {
+    if (e.target.id !== 'resume') return;
+    expired = false;
+    ['custId', 'account', 'channel', 'risk', 'summary'].forEach(function (id) { $(id).disabled = false; });
+    $('submitBtn').disabled = false;
+    $('banner').innerHTML = '';
+    Gym.record('interrupts', 'session-resumed', null);
+  });
+  document.addEventListener('visibilitychange', update);
+  setTimeout(showToast, WARN_AFTER_MS);
+
+  // ----- Intake -----
+  $('intake').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (expired) return;
+    const v = function (id) { return $(id).value.trim(); };
+    const missing = [['account', 'Account number'], ['channel', 'Preferred contact channel'], ['risk', 'AML risk score']]
+      .filter(function (f) { return !v(f[0]); }).map(function (f) { return f[1] + ' is required.'; });
+    if (missing.length) { $('banner').innerHTML = '<div class="error">' + missing.join('<br>') + '</div>'; return; }
+    const data = { customerId: v('custId'), accountNumber: v('account'), preferredChannel: v('channel'), amlRiskScore: v('risk'),
+      summary: v('summary'), sessionExtended: extended };
+    Gym.record('interrupts', 'submission', data);
+    clearInterval(tick);
+    $('toast').hidden = true;
+    $('intake').hidden = true;
+    $('done').hidden = false;
+    $('done').innerHTML = '<div class="success"><b>Complaint created.</b> Reference CMP-' + Gym.hash(JSON.stringify(data)).slice(0, 6) +
+      '.</div><p><a href="index.html">New complaint</a> &middot; <a href="../summary.html">Run summary</a></p>';
+  });
+})();
+</script>
+</body>
+</html>

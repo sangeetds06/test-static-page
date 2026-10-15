@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gym run summary</title>
+<link rel="stylesheet" href="style.css">
+<script src="common.js"></script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html" style="color:#fff">Capability gym</a><span class="spacer"></span><a href="summary.html?reset=1">Reset all</a></header>
+<main class="page">
+  <h1>Run summary</h1>
+  <p class="muted">Everything recorded in this browser under localStorage key <code>gymState.v1</code>.</p>
+  <div id="out"></div>
+</main>
+<script>
+(function () {
+  const out = document.getElementById('out');
+  if (window.__gymWasReset) out.innerHTML = '<div class="success">State cleared.</div>';
+  const s = Gym.loadState();
+  const cases = ['wizard', 'reconcile', 'documents', 'interrupts'];
+  let html = '';
+  cases.forEach(function (name) {
+    const c = s.cases[name];
+    const subs = c ? c.submissions : [];
+    html += '<div class="panel"><h2 style="margin-top:0">' + name + '</h2>';
+    if (!subs.length) {
+      html += '<p class="muted">No submission recorded.</p>';
+    } else {
+      html += '<p>' + subs.length + ' submission(s). Latest at ' + Gym.esc(subs[subs.length - 1].at) + ':</p>';
+      html += '<div class="pre">' + Gym.esc(JSON.stringify(subs[subs.length - 1].data, null, 2)) + '</div>';
+      if (subs.length > 1) {
+        html += '<details><summary>Earlier submissions</summary><div class="pre">' +
+          Gym.esc(JSON.stringify(subs.slice(0, -1), null, 2)) + '</div></details>';
+      }
+    }
+    html += '</div>';
+  });
+  html += '<div class="panel"><h2 style="margin-top:0">Event log (' + s.events.length + ')</h2>';
+  html += s.events.length
+    ? '<table><thead><tr><th>Time</th><th>Case</th><th>Event</th><th>Detail</th></tr></thead><tbody>' +
+      s.events.map(function (e) {
+        return '<tr><td>' + Gym.esc(e.at) + '</td><td>' + Gym.esc(e.case) + '</td><td>' + Gym.esc(e.kind) +
+          '</td><td><code>' + Gym.esc(e.kind === 'submission' ? '(see above)' : JSON.stringify(e.data)) + '</code></td></tr>';
+      }).join('') + '</tbody></table>'
+    : '<p class="muted">No events.</p>';
+  html += '</div>';
+  out.insertAdjacentHTML('beforeend', html);
+})();
+</script>
+</body>
+</html>

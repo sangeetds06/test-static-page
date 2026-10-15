@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report discrepancies</title>
+<link rel="stylesheet" href="../style.css">
+<script src="../common.js"></script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="../index.html" style="color:#fff">FinOps</a>
+  <a href="index.html">Payments ledger</a><a href="bank.html">Bank statement</a><a href="submit.html" style="color:#fff;font-weight:600">Report discrepancies</a>
+  <span class="spacer"></span><span>ap.clerk4</span></header>
+<main class="page">
+  <div class="panel" id="formPanel">
+    <h1>Reconciliation exceptions: September 2026</h1>
+    <p class="muted">Add one row per discrepancy. Give the ledger payment ID, the bank reference, or both where they exist.</p>
+    <div id="banner"></div>
+    <table class="rows-table">
+      <thead><tr><th style="width:4%">#</th><th style="width:20%">Type</th><th style="width:16%">Payment ID</th><th style="width:16%">Bank reference</th><th>Note</th><th style="width:8%"></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="toolbar" style="margin-top:10px">
+      <button type="button" class="secondary" id="add">+ Add row</button>
+      <button type="button" id="submit">Submit exceptions</button>
+    </div>
+  </div>
+  <div class="panel" id="done" hidden></div>
+</main>
+<script>
+(function () {
+  const TYPES = ['Amount mismatch', 'Missing from bank statement', 'Missing from ledger', 'Date mismatch', 'Other'];
+  const tbody = document.getElementById('rows');
+  function renumber() {
+    Array.prototype.forEach.call(tbody.rows, function (tr, i) {
+      tr.cells[0].textContent = i + 1;
+      tr.querySelectorAll('[data-f]').forEach(function (inp) { inp.setAttribute('aria-label', inp.dataset.f + ' row ' + (i + 1)); });
+    });
+  }
+  function addRow() {
+    tbody.insertAdjacentHTML('beforeend', '<tr><td></td><td><select data-f="Type"><option value="">Select...</option>' +
+      TYPES.map(function (t) { return '<option>' + t + '</option>'; }).join('') + '</select></td>' +
+      '<td><input type="text" data-f="Payment ID" placeholder="PAY-....."></td><td><input type="text" data-f="Bank reference" placeholder="BST-......"></td>' +
+      '<td><input type="text" data-f="Note"></td><td><button type="button" class="secondary" data-remove>Remove</button></td></tr>');
+    renumber();
+  }
+  document.getElementById('add').addEventListener('click', addRow);
+  tbody.addEventListener('click', function (e) {
+    if (e.target.matches('[data-remove]')) {
+      e.target.closest('tr').remove();
+      if (!tbody.rows.length) addRow();
+      renumber();
+    }
+  });
+  document.getElementById('submit').addEventListener('click', function () {
+    const rows = Array.prototype.map.call(tbody.rows, function (tr) {
+      const v = function (f) { return tr.querySelector('[data-f="' + f + '"]').value.trim(); };
+      return { type: v('Type'), paymentId: v('Payment ID').toUpperCase(), bankRef: v('Bank reference').toUpperCase(), note: v('Note') };
+    }).filter(function (r) { return r.type || r.paymentId || r.bankRef || r.note; });
+    const problems = [];
+    if (!rows.length) problems.push('Add at least one discrepancy.');
+    rows.forEach(function (r, i) {
+      if (!r.type) problems.push('Row ' + (i + 1) + ': choose a type.');
+      if (!r.paymentId && !r.bankRef) problems.push('Row ' + (i + 1) + ': enter a payment ID or a bank reference.');
+    });
+    if (problems.length) {
+      document.getElementById('banner').innerHTML = '<div class="error">' + problems.map(Gym.esc).join('<br>') + '</div>';
+      return;
+    }
+    const entry = Gym.record('reconcile', 'submission', { period: '2026-09', exceptions: rows });
+    const ref = 'REC-' + Gym.hash(entry.at + JSON.stringify(rows)).slice(0, 6);
+    document.getElementById('formPanel').hidden = true;
+    const done = document.getElementById('done');
+    done.hidden = false;
+    done.innerHTML = '<div class="success"><b>' + rows.length + ' exception(s) submitted</b> for review. Reference ' + ref + '.</div>' +
+      '<p><a href="submit.html">Submit another set</a> &middot; <a href="../summary.html">Run summary</a></p>';
+  });
+  addRow();
+})();
+</script>
+</body>
+</html>

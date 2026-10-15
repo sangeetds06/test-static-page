@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments ledger</title>
+<link rel="stylesheet" href="../style.css">
+<script src="../common.js"></script>
+<script src="data.js"></script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="../index.html" style="color:#fff">FinOps</a>
+  <a href="index.html" style="color:#fff;font-weight:600">Payments ledger</a><a href="bank.html">Bank statement</a><a href="submit.html">Report discrepancies</a>
+  <span class="spacer"></span><span>ap.clerk4</span></header>
+<main class="page">
+  <section class="task">
+    <h2>Request from the Financial Controller</h2>
+    <p>Month-end close for <b>September 2026</b>: please reconcile the AP payments ledger against the operating account bank statement.
+      Every outgoing payment in the ledger should appear on the statement with the same amount and the same value date.</p>
+    <p>Log every difference you find (amount differences, payments not on the statement, statement items not in the ledger, and date differences) on the
+      <a href="submit.html">Report discrepancies</a> form, with the payment ID and/or bank reference and a short note. Do not log items that match.</p>
+  </section>
+  <div class="panel">
+    <div class="toolbar"><h1 style="margin:0">Payments ledger: September 2026</h1><span class="muted" id="count"></span></div>
+    <p class="muted" style="margin:4px 0 10px">Click a column heading to sort.</p>
+    <table id="tbl">
+      <thead><tr>
+        <th class="sortable" data-k="id">Payment ID</th><th class="sortable" data-k="supplier">Supplier</th>
+        <th class="sortable" data-k="date">Payment date</th><th class="sortable num" data-k="amount">Amount (EUR)</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="pager" id="pager"></div>
+  </div>
+</main>
+<script>
+(function () {
+  const rows = ReconData.ledger.slice();
+  const PAGE = 10;
+  let page = 1, sortKey = 'id', dir = 1;
+  const tbody = document.querySelector('#tbl tbody');
+  function render() {
+    rows.sort(function (a, b) { return (a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0) * dir; });
+    const pages = Math.ceil(rows.length / PAGE);
+    const slice = rows.slice((page - 1) * PAGE, page * PAGE);
+    tbody.innerHTML = slice.map(function (p) {
+      return '<tr><td>' + p.id + '</td><td>' + Gym.esc(p.supplier) + '</td><td>' + Gym.ukDate(p.date) +
+        '</td><td class="num">' + p.amount.toLocaleString('en-GB', { minimumFractionDigits: 2 }) + '</td></tr>';
+    }).join('');
+    document.getElementById('count').textContent = 'Showing ' + ((page - 1) * PAGE + 1) + '-' + Math.min(page * PAGE, rows.length) + ' of ' + rows.length + ' payments';
+    let h = '<button type="button" class="secondary" data-p="' + (page - 1) + '"' + (page === 1 ? ' disabled' : '') + '>Previous</button>';
+    for (let i = 1; i <= pages; i++) h += '<button type="button" class="secondary' + (i === page ? ' current' : '') + '" data-p="' + i + '" aria-label="Page ' + i + '"' + (i === page ? ' aria-current="page"' : '') + '>' + i + '</button>';
+    h += '<button type="button" class="secondary" data-p="' + (page + 1) + '"' + (page === pages ? ' disabled' : '') + '>Next</button>';
+    h += '<span class="muted" style="margin-left:8px">Page ' + page + ' of ' + pages + '</span>';
+    document.getElementById('pager').innerHTML = h;
+    document.querySelectorAll('th.sortable').forEach(function (th) {
+      const k = th.dataset.k;
+      th.setAttribute('aria-sort', k === sortKey ? (dir === 1 ? 'ascending' : 'descending') : 'none');
+      th.textContent = th.textContent.replace(/ [▲▼]$/, '') + (k === sortKey ? (dir === 1 ? ' ▲' : ' ▼') : '');
+    });
+  }
+  document.getElementById('pager').addEventListener('click', function (e) {
+    const b = e.target.closest('button[data-p]');
+    if (b && !b.disabled) { page = Number(b.dataset.p); render(); }
+  });
+  document.querySelector('#tbl thead').addEventListener('click', function (e) {
+    const th = e.target.closest('th.sortable');
+    if (!th) return;
+    if (sortKey === th.dataset.k) dir = -dir; else { sortKey = th.dataset.k; dir = 1; }
+    page = 1;
+    render();
+  });
+  render();
+})();
+</script>
+</body>
+</html>

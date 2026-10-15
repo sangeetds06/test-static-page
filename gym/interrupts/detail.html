@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customer record</title>
+<link rel="stylesheet" href="../style.css">
+<script src="../common.js"></script>
+<script src="data.js"></script>
+</head>
+<body data-page="detail">
+<header class="topbar"><span class="brand">Northern Mutual Service Desk</span><span>Customer record</span><span class="spacer"></span><span>agent.k.holm</span></header>
+<main class="page" id="main"></main>
+<script src="interrupts.js"></script>
+<script>
+(function () {
+  const id = new URLSearchParams(location.search).get('id');
+  const c = id && CustomerData.byId(id);
+  const main = document.getElementById('main');
+  if (!c) { main.innerHTML = '<div class="error">Customer not found.</div><p><a href="index.html">Back to search</a></p>'; return; }
+  document.title = c.name + ' - Customer record';
+  function kv(rows) { return '<dl class="kv">' + rows.map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + Gym.esc(r[1]) + '</dd>'; }).join('') + '</dl>'; }
+  main.innerHTML =
+    '<div class="panel" style="border-left:4px solid #1b5fa8"><h1 style="margin:0">' + Gym.esc(c.name) + '</h1><span class="muted">' + c.id + ' &middot; customer since ' + c.since + '</span></div>' +
+    '<div class="panel"><h3 style="margin-top:0">Profile</h3>' + kv([['Customer ID', c.id], ['Date of birth', Gym.ukDate(c.dob)], ['City', c.city],
+      ['Postcode', c.postcode], ['Account number', c.account], ['Service tier', c.tier], ['Relationship manager', c.rm]]) + '</div>' +
+    '<div class="panel"><h3 style="margin-top:0">Contact</h3>' + kv([['Email', c.email], ['Mobile', c.phone], ['Preferred contact channel', c.channel]]) + '</div>' +
+    '<div class="panel"><h3 style="margin-top:0">Compliance</h3><div id="compliance"><span class="spinner"></span>Loading compliance data from screening service...</div></div>';
+  setTimeout(function () {
+    document.getElementById('compliance').innerHTML = kv([['AML risk score', c.riskScore + ' (' + c.riskBand + ')'],
+      ['KYC review due', Gym.ukDate(c.kycDue)], ['Politically exposed person', c.pep], ['Last screened', '14/10/2026']]);
+  }, 3000 + Math.floor(Math.random() * 2000));
+})();
+</script>
+</body>
+</html>

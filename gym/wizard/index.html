@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supplier onboarding</title>
+<link rel="stylesheet" href="../style.css">
+<script src="../common.js"></script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="../index.html" style="color:#fff">Procurement Hub</a><span>Supplier management</span><span class="spacer"></span><span>proc.analyst2</span></header>
+<main class="page">
+  <section class="task">
+    <h2>Request from Category Management</h2>
+    <p>Please onboard our new marine supplier in the Procurement Hub. Details from the signed contract:</p>
+    <ul>
+      <li>Legal name: <b>Halvorsen Marine Components AS</b>, a limited company registered in <b>Norway</b></li>
+      <li>VAT number: <b>NO 918 274 556 MVA</b></li>
+      <li>Industry classification: <b>manufacture of other pumps and compressors</b></li>
+      <li>Contract start date: <b>17 March 2027</b></li>
+      <li>Categories: <b>Spare parts</b>, <b>Logistics</b> and <b>Field services</b></li>
+      <li>Estimated annual spend: <b>EUR 248,500</b></li>
+      <li>Payment terms: <b>Net 45</b></li>
+    </ul>
+    <p>Accept the supplier terms and submit. If the system says the VAT number is already registered, their finance team confirmed the correct number is <b>NO 918 274 565 MVA</b>; use that instead. Send me the confirmation reference when it is done.</p>
+  </section>
+
+  <div class="steps" id="steps">
+    <div class="step" data-step="1">1. Company details</div>
+    <div class="step" data-step="2">2. Commercial terms</div>
+    <div class="step" data-step="3">3. Review and submit</div>
+  </div>
+
+  <form id="wizard" class="panel" novalidate autocomplete="off">
+    <div id="banner"></div>
+
+    <fieldset data-step="1" style="border:none;padding:0;margin:0">
+      <h2 style="margin-top:0">Company details</h2>
+      <div class="field-row"><label for="legalName">Legal name *</label><input type="text" id="legalName" style="width:340px"><span class="field-error" data-for="legalName"></span></div>
+      <div class="field-row"><label for="entityType">Supplier type *</label>
+        <select id="entityType">
+          <option value="">Select...</option>
+          <option>Limited company</option><option>Public limited company</option><option>Partnership</option><option>Sole trader</option><option>Public body</option>
+        </select><span class="field-error" data-for="entityType"></span></div>
+      <div class="field-row"><label for="country">Country of registration *</label>
+        <select id="country">
+          <option value="">Select...</option>
+          <option>Denmark</option><option>Finland</option><option>Germany</option><option>Iceland</option><option>Netherlands</option><option>Norway</option><option>Sweden</option><option>United Kingdom</option>
+        </select><span class="field-error" data-for="country"></span></div>
+      <div class="field-row"><label for="vat">VAT number *</label><input type="text" id="vat" style="width:220px"><span class="field-error" data-for="vat"></span></div>
+      <div class="field-row"><label for="industry">Industry classification *</label>
+        <div class="ta"><input type="text" id="industry" placeholder="Type at least 2 characters to search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="industryList"><ul class="ta-list" id="industryList" role="listbox" hidden></ul></div>
+        <span class="field-error" data-for="industry"></span></div>
+    </fieldset>
+
+    <fieldset data-step="2" style="border:none;padding:0;margin:0" hidden>
+      <h2 style="margin-top:0">Commercial terms</h2>
+      <div class="field-row"><label for="startDate">Contract start date *</label>
+        <div class="dp"><input type="text" id="startDate" readonly placeholder="Choose a date" aria-haspopup="dialog"><div class="dp-pop" id="dpPop" role="dialog" aria-label="Choose date" hidden></div></div>
+        <span class="field-error" data-for="startDate"></span></div>
+      <div class="field-row"><span class="label">Categories * <span class="muted" style="font-weight:400">(select all that apply)</span></span>
+        <div class="chips" id="chips"></div><span class="field-error" data-for="categories"></span></div>
+      <div class="field-row"><label for="spend">Estimated annual spend *</label>
+        <div class="money"><span><select id="currency" style="border:none;padding:4px 0"><option>EUR</option><option>GBP</option><option>NOK</option><option>USD</option></select></span><input type="text" id="spend" inputmode="decimal" placeholder="0.00"></div>
+        <span class="field-error" data-for="spend"></span></div>
+      <div class="field-row"><span class="label">Payment terms *</span>
+        <div role="radiogroup" aria-label="Payment terms">
+          <label style="margin-right:14px"><input type="radio" name="terms" value="Net 30"> Net 30</label>
+          <label style="margin-right:14px"><input type="radio" name="terms" value="Net 45"> Net 45</label>
+          <label style="margin-right:14px"><input type="radio" name="terms" value="Net 60"> Net 60</label>
+          <label><input type="radio" name="terms" value="Immediate"> Immediate</label>
+        </div><span class="field-error" data-for="paymentTerms"></span></div>
+    </fieldset>
+
+    <fieldset data-step="3" style="border:none;padding:0;margin:0" hidden>
+      <h2 style="margin-top:0">Review and submit</h2>
+      <dl class="kv" id="review"></dl>
+      <div class="field-row" style="margin-top:14px"><label style="min-width:0;font-weight:400"><input type="checkbox" id="accept"> I confirm the supplier has accepted the Supplier Terms and Conditions (v4.2) *</label><span class="field-error" data-for="accept"></span></div>
+    </fieldset>
+
+    <div class="toolbar" style="margin-top:16px;border-top:1px solid #e1e6ec;padding-top:12px">
+      <button type="button" class="secondary" id="back">Back</button>
+      <span class="muted" id="stepLabel"></span>
+      <span><button type="button" id="next">Next</button><button type="button" id="submit" hidden>Submit supplier</button></span>
+    </div>
+  </form>
+
+  <div id="done" class="panel" hidden></div>
+</main>
+<script src="wizard.js"></script>
+</body>
+</html>

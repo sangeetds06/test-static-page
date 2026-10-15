@@ -23,7 +23,10 @@ async function seedCases() {
 
 function caseState(state, id) {
   if (!state.cases[id]) state.cases[id] = { notes: [], outbox: [], attachments: [] };
-  return state.cases[id];
+  const st = state.cases[id];
+  if (!st.drafts) st.drafts = [];
+  if (!st.reviews) st.reviews = [];
+  return st;
 }
 
 function currentStatus(seed, state) {
@@ -82,7 +85,8 @@ function actionsMenu(c, status) {
     <ul role="menu" hidden id="actions-list">
       <li role="none"><a role="menuitem" href="perform.html?id=${id}">Perform work</a></li>
       <li role="none"><a role="menuitem" href="note.html?id=${id}">Attach › Note</a></li>
-      <li role="none"><a role="menuitem" href="compose.html?id=${id}">Compose email</a></li>
+      <li role="none"><a role="menuitem" href="draft.html?id=${id}">Draft reply</a></li>
+      <li role="none"><a role="menuitem" href="review.html?id=${id}">Route to operator review</a></li>
       <li role="none"><a role="menuitem" href="refile.html?id=${id}">Re-file case</a></li>
       <li role="none"><a role="menuitem" href="pend.html?id=${id}">Pend and refer</a></li>
       <li role="none"><a role="menuitem" href="#" aria-disabled="true" class="muted">Generate correspondence (not available)</a></li>
@@ -166,6 +170,26 @@ function docViewerHtml(doc) {
   return `<!doctype html><html><head><style>body{margin:0;background:#8a8f94;font:13px Georgia,serif}.sheet{background:#fffdf7;margin:18px auto;max-width:560px;padding:36px 44px;box-shadow:0 2px 8px rgba(0,0,0,.4);white-space:pre-wrap}.meta{font:11px Arial;color:#ddd;text-align:center;padding-top:6px}${extraCss}</style></head><body><div class="meta">${esc(doc.name)} · page 1 of 1</div><div class="sheet">${body}</div></body></html>`;
 }
 
+// Load a document into a viewer iframe. PDFs open in the browser's own PDF viewer (src);
+// everything else is rendered as an HTML sheet (srcdoc, which would otherwise win over src).
+function showDocument(wrap, doc) {
+  const frame = wrap.querySelector('iframe');
+  const link = wrap.querySelector('.viewer-pdf-link');
+  wrap.hidden = false;
+  wrap.querySelector('.viewer-title').textContent = `Document viewer: ${doc.name}`;
+  if (doc.pdf) {
+    const href = new URL(doc.pdf, location.href).href;
+    frame.removeAttribute('srcdoc');
+    frame.classList.add('pdf');
+    frame.src = href;
+    if (link) { link.href = href; link.hidden = false; }
+  } else {
+    frame.classList.remove('pdf');
+    frame.srcdoc = docViewerHtml(doc);
+    if (link) link.hidden = true;
+  }
+}
+
 async function pageCase(user) {
   if (LEVEL === 2) return L2.pageCase(user);
   const id = params.get('id');
@@ -217,7 +241,7 @@ async function pageCase(user) {
         <thead><tr><th>Document ID</th><th>Name</th><th>Type</th><th>Received</th><th></th></tr></thead>
         <tbody>${c.documents.map(d => `<tr><td>${esc(d.id)}</td><td>${esc(d.name)}</td><td>${esc(d.type)}</td><td>${esc(d.received)}</td><td><button type="button" class="secondary open-doc" data-doc="${esc(d.id)}">Open</button></td></tr>`).join('') || '<tr><td colspan="5" class="muted">No documents.</td></tr>'}</tbody>
       </table>
-      <div id="viewer-wrap" hidden><h3 id="viewer-title">Document viewer</h3><iframe class="doc-viewer" id="doc-viewer" title="Document viewer"></iframe></div>
+      <div id="viewer-wrap" hidden><h3 id="viewer-title" class="viewer-title">Document viewer</h3><p><a class="viewer-pdf-link" target="_blank" rel="noopener" hidden>Open PDF in a new tab</a></p><iframe class="doc-viewer" id="doc-viewer" title="Document viewer"></iframe></div>
     </section>
 
     <section role="tabpanel" id="panel-notes" aria-labelledby="tab-notes" ${tab === 'notes' ? '' : 'hidden'}>
@@ -241,9 +265,7 @@ async function pageCase(user) {
   }));
   document.querySelectorAll('.open-doc').forEach(b => b.addEventListener('click', () => {
     const doc = c.documents.find(d => d.id === b.dataset.doc);
-    document.getElementById('viewer-wrap').hidden = false;
-    document.getElementById('viewer-title').textContent = `Document viewer: ${doc.name}`;
-    document.getElementById('doc-viewer').srcdoc = docViewerHtml(doc);
+    showDocument(document.getElementById('viewer-wrap'), doc);
     audit('pega', 'open-document', `${c.workId} ${doc.id}`);
   }));
   if (status === 'Pending-Resolve') setTimeout(() => location.reload(), RESOLVE_DELAY_MS + 300);
@@ -344,28 +366,101 @@ async function pageNote(user) {
   });
 }
 
-async function pageCompose(user) {
-  await caseFormPage(user, 'Compose email (team shared mailbox)', c => `
-    <div class="field-row"><label for="email_to">To</label><input type="text" id="email_to" name="email_to" size="50" value="${esc(c.replyTo)}"></div>
-    <div class="field-row"><label for="email_subject">Subject</label><input type="text" id="email_subject" name="email_subject" size="70" value="Your query about plan ${esc(c.planNumber)} (ref ${esc(c.workId)})"></div>
-    <div class="field-row"><label for="email_body">Message</label><textarea id="email_body" name="email_body" style="min-height:240px"></textarea></div>
-    <p class="muted">Sent emails are saved to the case attachments automatically.</p>`,
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+function letterAddressee(c) {
+  return [c.requester.name, c.requester.address].filter(Boolean).join(', ');
+}
+
+// Draft reply: Ema drafts and cites sources; nothing is sent. The operator reviews and sends.
+async function pageDraft(user) {
+  const prior = st => (st && st.drafts && st.drafts.length) ? st.drafts[st.drafts.length - 1] : null;
+  await caseFormPage(user, 'Draft reply (for operator review)', c => {
+    const last = prior(loadState().cases[c.workId]);
+    const channel = last ? last.channel : (c.replyTo ? 'Email' : 'Letter');
+    const to = last ? last.to : (c.replyTo || letterAddressee(c));
+    const opt = v => `<option${v === channel ? ' selected' : ''}>${v}</option>`;
+    return `
+    <p class="muted">Drafts are saved to the case for an operator to review and send. Nothing is sent from here.${last ? ` Saving again creates version ${last.version + 1}; the latest draft (v${last.version}) is loaded below.` : ''}</p>
+    <div class="field-row"><label for="reply_channel">Reply channel</label>
+      <select id="reply_channel" name="reply_channel">${opt('Email')}${opt('Letter')}</select></div>
+    <div class="field-row"><label for="draft_to">To</label><input type="text" id="draft_to" name="draft_to" size="60" value="${esc(to)}"></div>
+    <div class="field-row"><label for="draft_subject">Subject</label><input type="text" id="draft_subject" name="draft_subject" size="70" value="${esc(last ? last.subject : `Your query about plan ${c.planNumber} (ref ${c.workId})`)}"></div>
+    <div class="field-row"><label for="draft_body">Body</label><textarea id="draft_body" name="draft_body" style="min-height:240px">${esc(last ? last.body : '')}</textarea></div>
+    <div class="field-row"><label for="sources_cited">Sources cited</label><textarea id="sources_cited" name="sources_cited" placeholder="One source per line, e.g. SCM 4521873 › Policy Charges; Standard Wording SW-CHG-01">${esc(last ? last.sources : '')}</textarea></div>
+    <p class="muted">List every source used: the SCM plan and screen (with the valuation date where relevant), the request document, and each Standard Wording ID.</p>`;
+  },
   (c, f, u) => {
-    const to = f.email_to.value.trim();
-    const subject = f.email_subject.value.trim();
-    const body = f.email_body.value.trim();
+    const channel = f.reply_channel.value;
+    const to = f.draft_to.value.trim();
+    const subject = f.draft_subject.value.trim();
+    const body = f.draft_body.value.trim();
+    const sources = f.sources_cited.value.trim();
     const errors = [];
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) errors.push('Enter a valid email address in To. If there is no email on file, reply by letter instead.');
+    if (channel !== 'Email' && channel !== 'Letter') errors.push('Select a reply channel.');
+    if (channel === 'Email' && !EMAIL_RE.test(to)) errors.push('Enter a valid email address in To. If there is no email on file, choose Letter and address it to the postal address.');
+    if (channel === 'Letter' && !to) errors.push('Enter the addressee name and postal address in To.');
     if (!subject) errors.push('Enter a subject.');
-    if (body.length < 20) errors.push('Enter the message.');
+    if (body.length < 20) errors.push('Enter the reply body (at least 20 characters).');
+    if (!sources) errors.push('List the sources cited for this reply.');
     if (errors.length) return errors;
+    let version = 0;
     updateState(s => {
       const st = caseState(s, c.workId);
-      st.outbox.push({ at: nowStamp(), to, subject, body, by: u.username });
-      st.attachments.push({ date: nowStamp(), type: 'Sent email', name: subject, by: u.displayName });
+      version = st.drafts.length + 1;
+      st.drafts.push({ version, channel, to, subject, body, sources, at: nowStamp(), by: u.username, author: u.displayName });
+      st.attachments.push({ date: nowStamp(), type: 'Draft reply', name: `Draft reply v${version}`, by: u.displayName });
     });
-    audit('pega', 'send-email', `${c.workId} to ${to}`);
-    backToCase(c, `Email sent to ${to}.`, 'attachments');
+    audit('pega', 'save-draft', `${c.workId} v${version} ${channel} to ${to}`);
+    backToCase(c, `Draft reply v${version} saved for operator review. Nothing has been sent.`, 'attachments');
+    return [];
+  });
+  // Switching channel swaps the default addressee if the operator has not edited it.
+  const form = document.querySelector('form');
+  const chan = form && form.querySelector('[name=reply_channel]');
+  if (!chan) return;
+  const c = await findCase(params.get('id'));
+  chan.addEventListener('change', () => {
+    const to = form.querySelector('[name=draft_to]');
+    const defaults = [c.replyTo || '', letterAddressee(c)];
+    if (!to.value.trim() || defaults.includes(to.value.trim())) to.value = chan.value === 'Email' ? (c.replyTo || '') : letterAddressee(c);
+  });
+}
+
+// Route to operator review: the default hand-off once a draft exists.
+// Re-file and referral keep their own statuses; a handover on those cases is recorded only.
+async function pageReview(user) {
+  await caseFormPage(user, 'Route to operator review', c => {
+    const st = loadState().cases[c.workId] || {};
+    const n = (st.drafts || []).length;
+    return `
+    <p class="muted">${n ? `${n} draft reply version(s) saved on this case. The operator will review the latest draft (v${n}) and decide whether to send it.` : 'No draft reply saved on this case yet. Save one with Actions › Draft reply first (not needed if the case has been re-filed or referred).'}</p>
+    <div class="field-row"><label for="handover_note">Handover note</label><textarea id="handover_note" name="handover_note" placeholder="What the reply covers, what to check, anything unusual"></textarea></div>
+    <div class="field-row"><label for="confidence">Confidence</label>
+      <select id="confidence" name="confidence"><option value="">-- Select --</option><option>High</option><option>Medium</option><option>Low</option></select></div>`;
+  },
+  (c, f, u) => {
+    const note = f.handover_note.value.trim();
+    const confidence = f.confidence.value;
+    const st0 = loadState().cases[c.workId] || {};
+    const hasDraft = (st0.drafts || []).length > 0;
+    const errors = [];
+    if (!hasDraft && !st0.refile && !st0.referral) errors.push('Save a draft reply before routing to operator review (Actions › Draft reply).');
+    if (!note) errors.push('Enter a handover note.');
+    if (!confidence) errors.push('Select a confidence level.');
+    if (errors.length) return errors;
+    let status = '';
+    updateState(s => {
+      const st = caseState(s, c.workId);
+      const keep = st.status === 'Pending-Refile' || st.status === 'Pending-Referral';
+      if (!keep) st.status = 'Pending-Operator Review';
+      status = st.status;
+      st.reviews.push({ note, confidence, draftVersion: st.drafts.length || null, at: nowStamp(), by: u.username });
+      st.attachments.push({ date: nowStamp(), type: 'Operator review', name: `Routed to operator review (confidence ${confidence})`, by: u.displayName });
+    });
+    audit('pega', 'route-review', `${c.workId} confidence ${confidence}`);
+    backToCase(c, status === 'Pending-Operator Review' ? 'Case routed to operator review.' : `Handover recorded. Status remains ${status}.`);
+    return [];
   });
 }
 
@@ -442,14 +537,23 @@ async function pageKnowledge(user) {
     <h1>Knowledge Library</h1>
     <div class="panel" id="asq-procedure">
       <h2>Procedure guide: Answer Service Query (ASQ)</h2>
+      <p><strong>Ema drafts, the operator sends.</strong> Ema prepares the reply, cites its sources and hands the case to an operator, who reviews the draft and decides whether to send it. Ema does not send replies. Ema completes a case itself only for the agreed exceptions listed below.</p>
       <ol>
         <li><strong>Related cases.</strong> Work search on the plan number with "Open work only" cleared. Note any duplicate or linked cases.</li>
-        <li><strong>Filing check.</strong> Open the plan in SCM (plan reference = last 7 digits of the Pega plan number, no leading zero). Compare customer name, National Insurance number and date of birth with the case. If they do not match, add a note and <em>Re-file</em> the case to Indexing. Do not reply.</li>
-        <li><strong>Authority check.</strong> Needed when the channel is Email, Post or DCE. Planholder: details match. IFA: the agency must be recorded as the adviser on the plan. Third party or family: a registered power of attorney or third-party authority must be recorded on the plan. Employer: must be the scheme employer on the plan. If not authorised, reply with SW-AUTH-01 only and give no plan information. Contact centre and secure self-service requests have already been verified.</li>
-        <li><strong>Risk.</strong> If any fund shows <em>negative units</em> on Policy Value, do not quote a value. Send holding reply SW-HLD-01, then Pend and refer to Operational Support.</li>
+        <li><strong>Filing check.</strong> Open the plan in SCM (plan reference = last 7 digits of the Pega plan number, no leading zero). Compare customer name, National Insurance number and date of birth with the case. If they do not match, add a note and <em>Re-file</em> the case to Indexing. Do not draft a reply.</li>
+        <li><strong>Authority check.</strong> Needed when the channel is Email, Post or DCE. Planholder: details match. IFA: the agency must be recorded as the adviser on the plan. Third party or family: a registered power of attorney or third-party authority must be recorded on the plan. Employer: must be the scheme employer on the plan. If not authorised, the reply uses SW-AUTH-01 only and gives no plan information. Contact centre and secure self-service requests have already been verified.</li>
+        <li><strong>Risk.</strong> If any fund shows <em>negative units</em> on Policy Value, do not quote a value. Draft holding reply SW-HLD-01, add a note, then <em>Pend and refer</em> to Operational Support. Do not close the case.</li>
         <li><strong>Answer.</strong> List every question in the request and answer each from SCM using Standard Wording. Mention any other plans the customer holds (SW-OTH-01).</li>
-        <li><strong>Reply.</strong> Compose email to the reply-to address on file. If there is no email address, the case needs a letter (not available in this environment): add a note instead.</li>
-        <li><strong>Record and close.</strong> Add a note summarising what was done. Actions › Perform work: answer the checklist, Final action = Skip final action, Charge on task = No, Submit. Confirm the status reaches Resolved-Completed in Work search.</li>
+        <li><strong>Draft reply.</strong> Actions › Draft reply. Reply channel Email, to the reply-to address on file; if there is no email address on file, choose Letter and address it to the requester's postal address. In <em>Sources cited</em>, list every source used: the SCM plan and screen (with the valuation date where relevant, for example "SCM 4521873 › Policy Charges"), the request document, and each Standard Wording ID. Saving again creates a new version.</li>
+        <li><strong>Record.</strong> Attach › Note summarising the questions asked, what was checked and what was drafted.</li>
+        <li><strong>Route to operator review (default).</strong> Actions › Route to operator review with a short handover note (what to check, anything unusual) and your confidence (High, Medium or Low). The status becomes Pending-Operator Review. Do not use Perform work. If you are unsure whether an exception applies, route to operator review.</li>
+        <li><strong>Exceptions: Ema completes the case (SOW Section 3.5).</strong> Only for the cases on the exception list below: draft reply, add a note, then Actions › Perform work: answer the checklist, Final action = Skip final action, Charge on task = No, Submit. Confirm the status reaches Resolved-Completed in Work search.</li>
+      </ol>
+      <h3>Exception list (SOW Section 3.5)</h3>
+      <ul id="exception-list">
+        <li>No-authority responses using SW-AUTH-01 only.</li>
+      </ul>
+      <p class="muted">Re-file (filing mismatch) and Pend and refer (negative units) keep their own actions and statuses. All other cases go to operator review.</p>
       </ol>
     </div>
     <div class="panel" id="standard-wording">
@@ -467,17 +571,23 @@ async function pageSummary() {
     return `<tr>
       <td>${esc(c.workId)}</td><td>${esc(c.planNumber)}</td><td><strong>${esc(currentStatus(c, state))}</strong></td><td>${esc(st.assignedTo || '')}</td>
       <td>${(st.notes || []).map(n => `<div><strong>${esc(n.title)}</strong>: ${esc(n.text)}</div>`).join('')}</td>
-      <td>${(st.outbox || []).map(m => `<div><strong>To:</strong> ${esc(m.to)}<br><strong>${esc(m.subject)}</strong><div class="pre">${esc(m.body)}</div></div>`).join('')}</td>
+      <td>${(st.drafts || []).map(d => `<div class="summary-draft"><strong>v${esc(d.version)}</strong> · ${esc(d.channel)} · ${esc(d.at)} · ${esc(d.author || d.by)}<br><strong>To:</strong> ${esc(d.to)}<br><strong>${esc(d.subject)}</strong><div class="pre">${esc(d.body)}</div><strong>Sources cited:</strong><div class="pre">${esc(d.sources)}</div></div>`).join('')}</td>
+      <td>${(st.reviews || []).map(r => `<div><strong>Confidence:</strong> ${esc(r.confidence)} · draft v${esc(r.draftVersion || '-')} · ${esc(r.at)}<div class="pre">${esc(r.note)}</div></div>`).join('')}</td>
       <td>${st.perform ? esc(JSON.stringify(st.perform)) : ''}${st.refile ? `<div>Re-file: ${esc(JSON.stringify(st.refile))}</div>` : ''}${st.referral ? `<div>Referral: ${esc(JSON.stringify(st.referral))}</div>` : ''}</td>
     </tr>`;
   }).join('');
   document.body.innerHTML = `<main class="page">
     <h1>Run summary (reviewer view)</h1>
-    <p class="muted">State is stored in this browser only. <a href="summary.html?reset=1">Reset all</a></p>
-    <table><thead><tr><th>Work ID</th><th>Plan</th><th>Status</th><th>Assigned</th><th>Notes</th><th>Emails sent</th><th>Checklist / re-file / referral</th></tr></thead><tbody>${rows}</tbody></table>
+    <p class="muted">State is stored in this browser only. Drafts are never sent from the mock: the operator reviews and sends. <a href="summary.html?reset=1">Reset all</a></p>
+    <table><thead><tr><th>Work ID</th><th>Plan</th><th>Status</th><th>Assigned</th><th>Notes</th><th>Drafts</th><th>Operator review</th><th>Checklist / re-file / referral</th></tr></thead><tbody>${rows}</tbody></table>
     <h2>Audit log</h2>
     <table><thead><tr><th>At</th><th>App</th><th>Event</th><th>Detail</th></tr></thead><tbody>${state.audit.map(a => `<tr><td>${esc(a.at)}</td><td>${esc(a.app)}</td><td>${esc(a.event)}</td><td>${esc(a.detail)}</td></tr>`).join('')}</tbody></table>
   </main>`;
+}
+
+// Old "Compose email" links now open Draft reply.
+function pageComposeRedirect() {
+  location.replace(`draft.html${location.search}`);
 }
 
 function loadLevel2() {
@@ -495,6 +605,6 @@ function loadLevel2() {
   if (page === 'summary') return pageSummary();
   const user = currentUser('pega');
   if (LEVEL === 2) await loadLevel2();
-  const pages = { home: pageHome, case: pageCase, perform: pagePerform, note: pageNote, compose: pageCompose, refile: pageRefile, pend: pagePend, worksearch: pageWorkSearch, knowledge: pageKnowledge };
+  const pages = { home: pageHome, case: pageCase, perform: pagePerform, note: pageNote, draft: pageDraft, review: pageReview, compose: pageComposeRedirect, refile: pageRefile, pend: pagePend, worksearch: pageWorkSearch, knowledge: pageKnowledge };
   await pages[page](user);
 })();

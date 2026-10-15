@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports portal</title>
+<link rel="stylesheet" href="../style.css">
+<script src="../common.js"></script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="../index.html" style="color:#fff">Lindenfeld Investor Reporting</a><span>Reports</span><span class="spacer"></span><span>oversight.analyst</span></header>
+<main class="page">
+  <section class="task">
+    <h2>Request from the Investment Oversight Committee secretary</h2>
+    <p>For tomorrow's committee pack, I need four figures from the <b>Q3 2026 Quarterly fund performance</b> report (I Acc share class):</p>
+    <ul>
+      <li>the Aurora Sustainable Equity Fund's <b>net return for Q3 2026</b></li>
+      <li>the Meridian Global Bond Fund's <b>3-year annualised return</b></li>
+      <li>the <b>total net flows</b> across all funds for the quarter (EUR m)</li>
+      <li>the Aurora Sustainable Equity Fund's <b>ongoing charges figure (OCF)</b></li>
+    </ul>
+    <p>Enter them in the form below and attach the report (or a screenshot of it) as evidence.</p>
+  </section>
+
+  <div class="panel">
+    <h1>Published reports</h1>
+    <table>
+      <thead><tr><th>Report</th><th>Period</th><th>Published</th><th>Format</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>Quarterly fund performance</td><td>Q3 2026</td><td>09/10/2026</td><td>PDF, 5 pages</td>
+          <td><a class="btn" id="downloadQ3" href="files/Quarterly-Fund-Performance-Q3-2026.pdf" download="Quarterly-Fund-Performance-Q3-2026.pdf">Download</a></td></tr>
+        <tr><td>Quarterly fund performance</td><td>Q2 2026</td><td>10/07/2026</td><td>PDF</td>
+          <td><span class="btn disabled" aria-disabled="true" title="Archived">Archived</span></td></tr>
+        <tr><td>Annual stewardship report</td><td>2025</td><td>28/03/2026</td><td>PDF</td>
+          <td><span class="btn disabled" aria-disabled="true" title="Restricted">Restricted</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <form class="panel" id="form" novalidate>
+    <h2 style="margin-top:0">Committee pack figures</h2>
+    <div id="banner"></div>
+    <div class="field-row"><label for="auroraQ3">Aurora Q3 2026 net return (%) *</label><input type="text" id="auroraQ3" placeholder="e.g. 1.23"></div>
+    <div class="field-row"><label for="meridian3y">Meridian 3-year annualised return (%) *</label><input type="text" id="meridian3y" placeholder="e.g. 1.23"></div>
+    <div class="field-row"><label for="netFlows">Total net flows Q3 (EUR m) *</label><input type="text" id="netFlows" placeholder="e.g. -12.3"></div>
+    <div class="field-row"><label for="auroraOcf">Aurora OCF (%) *</label><input type="text" id="auroraOcf" placeholder="e.g. 0.50"></div>
+    <div class="field-row"><label for="evidence">Evidence file *</label><input type="file" id="evidence"><span class="muted" id="fileInfo" style="margin-left:8px"></span></div>
+    <div class="field-row"><label for="comment">Comment</label><textarea id="comment" style="max-width:420px"></textarea></div>
+    <button type="submit">Submit figures</button>
+  </form>
+  <div class="panel" id="done" hidden></div>
+</main>
+<script>
+(function () {
+  const $ = function (id) { return document.getElementById(id); };
+  $('downloadQ3').addEventListener('click', function () { Gym.record('documents', 'download', { file: this.getAttribute('download') }); });
+  $('evidence').addEventListener('change', function () {
+    const f = this.files[0];
+    $('fileInfo').textContent = f ? f.name + ' (' + f.size.toLocaleString('en-GB') + ' bytes)' : '';
+  });
+  function num(id) {
+    const raw = $(id).value.trim().replace(/[%\s,]/g, '').replace(/^−/, '-');
+    return raw && /^[-+]?\d+(\.\d+)?$/.test(raw) ? Number(raw) : null;
+  }
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const fields = { auroraQ3: 'Aurora Q3 2026 net return', meridian3y: 'Meridian 3-year annualised return', netFlows: 'Total net flows', auroraOcf: 'Aurora OCF' };
+    const problems = [];
+    const values = {};
+    Object.keys(fields).forEach(function (k) {
+      values[k] = num(k);
+      if (values[k] === null) problems.push(fields[k] + ': enter a number.');
+    });
+    const f = $('evidence').files[0];
+    if (!f) problems.push('Attach an evidence file.');
+    if (problems.length) { $('banner').innerHTML = '<div class="error">' + problems.join('<br>') + '</div>'; return; }
+    const data = {
+      figures: values,
+      raw: { auroraQ3: $('auroraQ3').value, meridian3y: $('meridian3y').value, netFlows: $('netFlows').value, auroraOcf: $('auroraOcf').value },
+      evidence: { name: f.name, size: f.size, type: f.type || '', lastModified: f.lastModified },
+      comment: $('comment').value.trim(),
+    };
+    Gym.record('documents', 'submission', data);
+    $('form').hidden = true;
+    $('done').hidden = false;
+    $('done').innerHTML = '<div class="success"><b>Figures submitted.</b> Evidence received: ' + Gym.esc(f.name) + ' (' + f.size.toLocaleString('en-GB') +
+      ' bytes).</div><p><a href="index.html">Submit again</a> &middot; <a href="../summary.html">Run summary</a></p>';
+  });
+})();
+</script>
+</body>
+</html>

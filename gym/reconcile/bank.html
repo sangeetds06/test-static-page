@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bank statement</title>
+<link rel="stylesheet" href="../style.css">
+<script src="../common.js"></script>
+<script src="data.js"></script>
+<style>.bank-top { background: #12403c; } .bank-top a { color: #cfe7e3; }</style>
+</head>
+<body>
+<header class="topbar bank-top"><a class="brand" href="../index.html" style="color:#fff">NordBank Business Online</a>
+  <a href="index.html">Payments ledger</a><a href="bank.html" style="color:#fff;font-weight:600">Bank statement</a><a href="submit.html">Report discrepancies</a>
+  <span class="spacer"></span><span>Operating account</span></header>
+<main class="page">
+  <div class="panel">
+    <h1 style="margin:0 0 4px">Account statement</h1>
+    <p class="muted" style="margin:0">Account <span id="acct"></span> &middot; Period 01 Sep 2026 to 30 Sep 2026 &middot; Debits only</p>
+  </div>
+  <div class="feed" id="feed" style="max-height:none">
+    <div class="item" style="font-weight:600;background:#e4e9ef"><span>Value date</span><span>Bank ref</span><span>Description</span><span class="amt">Amount (EUR)</span></div>
+    <div id="items"></div>
+    <div class="loader" id="loader"><button type="button" class="secondary" id="more">Load more transactions</button></div>
+  </div>
+  <p class="muted" id="status" style="margin-top:8px"></p>
+</main>
+<script>
+(function () {
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function bankDate(iso) { const p = iso.split('-'); return p[2] + ' ' + MONTHS[+p[1] - 1] + ' ' + p[0]; }
+  document.getElementById('acct').textContent = ReconData.account;
+  const all = ReconData.statement;
+  const BATCH = 15;
+  let shown = 0, loading = false;
+  const items = document.getElementById('items');
+  const loader = document.getElementById('loader');
+  function status() {
+    document.getElementById('status').textContent = shown < all.length
+      ? 'Showing ' + shown + ' transactions. Scroll down to load more.'
+      : 'All ' + all.length + ' transactions loaded. End of statement.';
+  }
+  function loadMore() {
+    if (loading || shown >= all.length) return;
+    loading = true;
+    loader.innerHTML = '<span class="spinner"></span>Loading transactions...';
+    setTimeout(function () {
+      const next = all.slice(shown, shown + BATCH);
+      items.insertAdjacentHTML('beforeend', next.map(function (b) {
+        return '<div class="item"><span>' + bankDate(b.valueDate) + '</span><span>' + b.ref + '</span><span>' + Gym.esc(b.description) +
+          '</span><span class="amt">' + b.amount.toLocaleString('en-GB', { minimumFractionDigits: 2 }) + '</span></div>';
+      }).join(''));
+      shown += next.length;
+      loading = false;
+      loader.innerHTML = shown < all.length
+        ? '<button type="button" class="secondary" id="more">Load more transactions</button>'
+        : '<span>End of statement</span>';
+      status();
+    }, 700);
+  }
+  loader.addEventListener('click', function (e) { if (e.target.id === 'more') loadMore(); });
+  function nearBottom() {
+    const rect = loader.getBoundingClientRect();
+    return rect.top < window.innerHeight + 80;
+  }
+  window.addEventListener('scroll', function () { if (shown > 0 && nearBottom()) loadMore(); }, { passive: true });
+  loadMore();
+})();
+</script>
+</body>
+</html>

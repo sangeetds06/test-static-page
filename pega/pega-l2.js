@@ -82,7 +82,8 @@ const L2 = (() => {
     const items = [
       ['Perform work', `perform.html?id=${id}`],
       ['Attach › Note', `note.html?id=${id}`],
-      ['Compose email', `compose.html?id=${id}`],
+      ['Draft reply', `draft.html?id=${id}`],
+      ['Route to operator review', `review.html?id=${id}`],
       ['Re-file case', `refile.html?id=${id}`],
       ['Pend and refer', `pend.html?id=${id}`],
       ['Generate correspondence (not available)', ''],
@@ -208,7 +209,7 @@ const L2 = (() => {
     if (k === 'documents') {
       return rows([['Document ID'], ['Name', '1fr'], ['Type'], ['Received'], ['']],
         c.documents.map(d => [esc(d.id), esc(d.name), esc(d.type), esc(d.received), `<span class="l2-link" role="button" tabindex="0" data-doc="${esc(d.id)}">Open</span>`]))
-        + `<div id="viewer_${rid()}" class="l2-viewer" hidden><div class="l2-sec l2-viewer-title">Document viewer</div><iframe class="doc-viewer" title="Document viewer"></iframe></div>`;
+        + `<div id="viewer_${rid()}" class="l2-viewer" hidden><div class="l2-sec l2-viewer-title viewer-title">Document viewer</div><div><a class="viewer-pdf-link" target="_blank" rel="noopener" hidden>Open PDF in a new tab</a></div><iframe class="doc-viewer" title="Document viewer"></iframe></div>`;
     }
     if (k === 'notes') {
       const notes = [...c.caseNotes.map(n => ({ ...n, title: '' })), ...(st.notes || [])];
@@ -225,10 +226,7 @@ const L2 = (() => {
     document.querySelectorAll('[data-doc]').forEach(b => {
       const open = () => {
         const doc = c.documents.find(d => d.id === b.dataset.doc);
-        const wrap = document.querySelector('.l2-viewer');
-        wrap.hidden = false;
-        wrap.querySelector('.l2-viewer-title').textContent = `Document viewer: ${doc.name}`;
-        wrap.querySelector('iframe').srcdoc = docViewerHtml(doc);
+        showDocument(document.querySelector('.l2-viewer'), doc);
         audit('pega', 'open-document', `${c.workId} ${doc.id}`);
       };
       b.addEventListener('click', open);
@@ -268,7 +266,7 @@ const L2 = (() => {
     box.hidden = false;
   }
 
-  // Note / compose / re-file / pend: level-1 fields, renamed to generated ids.
+  // Note / draft reply / operator review / re-file / pend: level-1 fields, renamed to generated ids.
   async function caseFormPage(user, title, bodyHtml, onSubmit) {
     const c = await formShell(user, title, bodyHtml);
     if (!c) return;

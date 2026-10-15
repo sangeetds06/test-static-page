@@ -293,6 +293,94 @@
       "markers": []
     },
     {
+      "workId": "ASQ-1009",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing",
+      "planNumber": "0905093364",
+      "status": "New",
+      "priority": 50,
+      "created": "14/10/2026 09:05",
+      "slaDue": "28/10/2026",
+      "channel": "Post",
+      "source": "IFA",
+      "requester": {
+        "name": "Rachel Moore",
+        "organisation": "Kestrel Financial Planning",
+        "agencyNumber": "AG-6604",
+        "email": "rachel.moore@kestrelfp.example",
+        "address": "3 Abbey Row, Bath, BA1 1LZ"
+      },
+      "customer": {
+        "name": "Alan Brennan",
+        "niNumber": "QQ 50 93 36 A",
+        "dob": "09/02/1965",
+        "address": "18 Prior Park Road, Bath, BA2 4NG",
+        "email": "alan.brennan@mail.example"
+      },
+      "replyTo": "rachel.moore@kestrelfp.example",
+      "documentDetails": null,
+      "documents": [
+        {
+          "id": "DOC-55301",
+          "name": "IFA letter - 08-10-2026.pdf",
+          "type": "Letter (PDF, 2 pages)",
+          "received": "13/10/2026",
+          "pdf": "../assets/docs/asq-1009-ifa-letter.pdf"
+        }
+      ],
+      "caseNotes": [
+        { "date": "14/10/2026 09:05", "author": "Indexing (offshore)", "text": "Post scanned (text layer) and indexed against plan 0905093364. Process: Answer Service Query." }
+      ],
+      "markers": []
+    },
+    {
+      "workId": "ASQ-1010",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing",
+      "planNumber": "0903871205",
+      "status": "New",
+      "priority": 45,
+      "created": "14/10/2026 11:30",
+      "slaDue": "28/10/2026",
+      "channel": "Email",
+      "source": "Planholder",
+      "requester": {
+        "name": "Carol Pemberton",
+        "organisation": "",
+        "email": "carol.pemberton@mail.example",
+        "address": "9 Linden Avenue, Taunton, TA1 4QR"
+      },
+      "customer": {
+        "name": "Carol Pemberton",
+        "niNumber": "QQ 38 71 20 C",
+        "dob": "27/05/1962",
+        "address": "9 Linden Avenue, Taunton, TA1 4QR",
+        "email": "carol.pemberton@mail.example"
+      },
+      "replyTo": "carol.pemberton@mail.example",
+      "documentDetails": null,
+      "documents": [
+        {
+          "id": "DOC-55331",
+          "name": "Email from planholder - statement query.eml",
+          "type": "Email",
+          "received": "14/10/2026",
+          "content": "From: Carol Pemberton <carol.pemberton@mail.example>\nTo: servicing@aegon-mock.example\nSubject: Query about my annual statement - plan 0903871205\n\nHello,\n\nPlease see the attached letter and my annual statement. I have a question about the value shown.\n\nThank you,\nCarol Pemberton"
+        },
+        {
+          "id": "DOC-55332",
+          "name": "Letter and annual statement.pdf",
+          "type": "Email attachment (PDF, 3 pages)",
+          "received": "14/10/2026",
+          "pdf": "../assets/docs/asq-1010-letter-and-statement.pdf"
+        }
+      ],
+      "caseNotes": [
+        { "date": "14/10/2026 11:30", "author": "Indexing (offshore)", "text": "Email and PDF attachment indexed against plan 0903871205. Process: Answer Service Query." }
+      ],
+      "markers": []
+    },
+    {
       "workId": "ASQ-0877",
       "process": "Answer Service Query",
       "subProcess": "Servicing",
