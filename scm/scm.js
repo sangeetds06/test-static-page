@@ -29,7 +29,8 @@ function mountScm(user, inner, plan, active) {
 }
 
 function planBar(p) {
-  return `<div class="scm-plan-bar">Plan <strong id="plan-ref">${esc(p.planRef)}</strong> · ${esc(p.productName)} · ${esc(p.holder.name)} · Status: <strong>${esc(p.status)}</strong></div>`;
+  const hint = p.didYouMean ? `<div class="panel" id="did-you-mean">Did you mean <a href="plan.html?plan=${esc(p.didYouMean)}&tab=summary">${esc(p.didYouMean)}</a>? A plan with a similar planholder name exists.</div>` : '';
+  return `${hint}<div class="scm-plan-bar">Plan <strong id="plan-ref">${esc(p.planRef)}</strong> · ${esc(p.productName)} · ${esc(p.holder.name)} · Status: <strong>${esc(p.status)}</strong></div>`;
 }
 
 function valuationAt(p, date) {
@@ -49,16 +50,27 @@ function kv(rows) {
 async function pageSearch(user) {
   const q = (params.get('ref') || '').trim();
   let msg = '';
+  let results = '';
   if (q) {
     const d = await data();
     if (!/^[1-9]\d{5,6}$/.test(q)) msg = '<div class="error" role="alert">Invalid plan reference. Enter the plan reference without leading zeros (6-7 digits).</div>';
     else if (!d.plans[q]) msg = `<div class="error" role="alert">No plan found for reference ${esc(q)}.</div>`;
+    else if (d.plans[q].didYouMean) {
+      // Stress pack: plans with a near-duplicate show a results list with a "Did you mean" link first.
+      audit('scm', 'plan-search', q);
+      const p = d.plans[q];
+      const alt = d.plans[p.didYouMean];
+      results = `${alt ? `<div class="panel" id="did-you-mean" style="font-size:14px">Did you mean <a href="plan.html?plan=${esc(alt.planRef)}&tab=summary"><strong>${esc(alt.planRef)}</strong></a>? <span class="muted">(${esc(alt.holder.name)} · ${esc(alt.productName)} · most viewed)</span></div>` : ''}
+      <h2>Results (1)</h2>
+      <table id="search-results"><thead><tr><th>Plan reference</th><th>Product</th><th>Planholder</th><th>Status</th></tr></thead>
+      <tbody><tr><td><a href="plan.html?plan=${esc(p.planRef)}&tab=summary">${esc(p.planRef)}</a></td><td>${esc(p.productName)}</td><td>${esc(p.holder.name)}</td><td>${esc(p.status)}</td></tr></tbody></table>`;
+    }
     else {
       audit('scm', 'plan-search', q);
       location.replace(`plan.html?plan=${encodeURIComponent(q)}&tab=summary`);
       return;
     }
-    audit('scm', 'plan-search-failed', q);
+    if (!results) audit('scm', 'plan-search-failed', q);
   }
   mountScm(user, `
     <h1>Plan search</h1>
@@ -67,7 +79,7 @@ async function pageSearch(user) {
       <label for="ref"><strong>Plan reference</strong></label>
       <input type="text" id="ref" name="ref" value="${esc(q)}" maxlength="10">
       <button type="submit">Search</button>
-    </form>`);
+    </form>${results}`);
   document.getElementById('search-form').addEventListener('submit', e => {
     e.preventDefault();
     location.href = `index.html?ref=${encodeURIComponent(e.target.ref.value.trim())}`;

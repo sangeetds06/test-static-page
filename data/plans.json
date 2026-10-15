@@ -273,6 +273,84 @@
       "investments": [ { "fund": "7744", "status": "Current" } ],
       "premiums": [],
       "transactions": []
+    },
+    "6139052": {
+      "planRef": "6139052",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "10",
+      "status": "Live",
+      "startDate": "01/11/2003",
+      "holder": { "name": "Mrs Joan Whitaker", "niNumber": "QQ613905B", "dob": "22/11/1957", "address": "14 Abbey Gardens, Whitby, YO21 3PL" },
+      "adviser": null,
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [],
+      "charges": [
+        { "charge": "Annual management charge", "rate": "1.00%", "basis": "% of fund value p.a.", "applies": true, "notes": "" },
+        { "charge": "Early exit charge", "rate": "", "basis": "", "applies": false, "notes": "" }
+      ],
+      "historicCharges": [],
+      "valuations": [
+        { "date": "31/03/2026", "funds": [ { "fund": "1012", "units": 8450.2000, "price": 3.2405 }, { "fund": "1105", "units": 3120.5000, "price": 3.8790 } ] },
+        { "date": "30/06/2026", "funds": [ { "fund": "1012", "units": 8450.2000, "price": 3.3010 }, { "fund": "1105", "units": 3120.5000, "price": 3.9480 } ] },
+        { "date": "15/10/2026", "funds": [ { "fund": "1012", "units": 8450.2000, "price": 3.4120 }, { "fund": "1105", "units": 3120.5000, "price": 4.0210 } ] }
+      ],
+      "investments": [
+        { "fund": "1012", "status": "Current" },
+        { "fund": "1105", "status": "Current" }
+      ],
+      "premiums": [],
+      "transactions": []
+    },
+    "6604418": {
+      "planRef": "6604418",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "9",
+      "status": "Live",
+      "startDate": "17/07/1996",
+      "holder": { "name": "Mr Gerald Fenwick", "niNumber": "QQ660441C", "dob": "08/04/1952", "address": "5 Heron Walk, Nantwich, CW5 6LT" },
+      "adviser": null,
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [],
+      "charges": [ { "charge": "Annual management charge", "rate": "1.00%", "basis": "% of fund value p.a.", "applies": true, "notes": "" } ],
+      "historicCharges": [],
+      "valuations": [ { "date": "15/10/2026", "funds": [ { "fund": "1012", "units": 24310.0000, "price": 3.4120 }, { "fund": "3301", "units": 5200.0000, "price": 1.9875 } ] } ],
+      "investments": [ { "fund": "1012", "status": "Current" }, { "fund": "3301", "status": "Current" } ],
+      "premiums": [],
+      "transactions": []
+    },
+    "4521878": {
+      "planRef": "4521878",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "9",
+      "status": "Live",
+      "startDate": "01/09/2018",
+      "didYouMean": "4521873",
+      "holder": { "name": "Mrs Margarete Elison", "niNumber": "QQ123457B", "dob": "14/08/1963", "address": "72 Orchard Walk, Harrogate, HG2 7PN" },
+      "adviser": null,
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [],
+      "charges": [
+        { "charge": "Annual management charge", "rate": "1.20%", "basis": "% of fund value p.a.", "applies": true, "notes": "" },
+        { "charge": "Policy fee", "rate": "£2.75", "basis": "per month", "applies": true, "notes": "" },
+        { "charge": "Additional fund expenses", "rate": "0.08%", "basis": "% of fund value p.a.", "applies": true, "notes": "Aegon UK Equity Pn only" },
+        { "charge": "Adviser charge (trail commission)", "rate": "", "basis": "", "applies": false, "notes": "" },
+        { "charge": "Large fund rebate", "rate": "", "basis": "", "applies": false, "notes": "" },
+        { "charge": "Early exit charge", "rate": "3.00%", "basis": "% of fund value", "applies": true, "notes": "Applies to transfers before 01/09/2028" }
+      ],
+      "historicCharges": [],
+      "valuations": [ { "date": "15/10/2026", "funds": [ { "fund": "1012", "units": 6105.3300, "price": 3.4120 }, { "fund": "1105", "units": 2210.0000, "price": 4.0210 } ] } ],
+      "investments": [ { "fund": "1012", "status": "Current" }, { "fund": "1105", "status": "Current" } ],
+      "premiums": [],
+      "transactions": [ { "date": "01/10/2026", "type": "Policy fee", "amount": "-£2.75" } ]
     }
   }
 }

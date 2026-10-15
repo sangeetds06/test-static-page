@@ -4,6 +4,18 @@
 const CLOSED = s => s.startsWith('Resolved');
 let SEED = null;
 
+// UI level: ?level=2 switches mock-Pega to the hard-DOM variant (pega-l2.js) and
+// remembers it in localStorage; ?level=1 switches back. Data and outcomes are identical.
+const LEVEL_KEY = 'aegonMock.level';
+const LEVEL = (() => {
+  const want = params.get('level');
+  try {
+    if (want === '2') localStorage.setItem(LEVEL_KEY, '2');
+    else if (want === '1') localStorage.removeItem(LEVEL_KEY);
+    return localStorage.getItem(LEVEL_KEY) === '2' ? 2 : 1;
+  } catch (e) { return want === '2' ? 2 : 1; }
+})();
+
 async function seedCases() {
   if (!SEED) SEED = (await loadJson('cases')).cases;
   return SEED;
@@ -96,7 +108,7 @@ async function pageHome(user) {
   const state = loadState();
   const cases = await seedCases();
   const mine = cases.filter(c => (state.cases[c.workId] || {}).assignedTo === user.username && !CLOSED(currentStatus(c, state)));
-  const queued = cases.filter(c => currentStatus(c, state) === 'New').length;
+  const queued = cases.filter(c => !c.stress && currentStatus(c, state) === 'New').length;
   mount(user, `
     <h1>Home</h1>
     <div class="panel">
@@ -123,7 +135,7 @@ async function getNextWork(user) {
     if (p && !CLOSED(currentStatus(p, state)) && !currentStatus(p, state).startsWith('Pending')) pick = p;
   }
   if (!pick) {
-    pick = cases.filter(c => currentStatus(c, state) === 'New').sort((a, b) => b.priority - a.priority)[0];
+    pick = cases.filter(c => !c.stress && currentStatus(c, state) === 'New').sort((a, b) => b.priority - a.priority)[0];
   }
   if (!pick) {
     document.getElementById('gnw-msg').innerHTML = '<div class="success">No more work in your workbasket.</div>';
@@ -139,10 +151,23 @@ async function getNextWork(user) {
 }
 
 function docViewerHtml(doc) {
-  return `<!doctype html><html><head><style>body{margin:0;background:#8a8f94;font:13px Georgia,serif}.sheet{background:#fffdf7;margin:18px auto;max-width:560px;padding:36px 44px;box-shadow:0 2px 8px rgba(0,0,0,.4);white-space:pre-wrap}.meta{font:11px Arial;color:#ddd;text-align:center;padding-top:6px}</style></head><body><div class="meta">${esc(doc.name)} · page 1 of 1</div><div class="sheet">${esc(doc.content)}</div></body></html>`;
+  if (doc.image) {
+    // Scanned image only: no text layer. Absolute URL because srcdoc frames have no own base.
+    const src = new URL(doc.image, location.href).href;
+    return `<!doctype html><html><head><style>body{margin:0;background:#8a8f94}.meta{font:11px Arial;color:#ddd;text-align:center;padding-top:6px}img{display:block;margin:18px auto;max-width:94%;box-shadow:0 2px 8px rgba(0,0,0,.4)}</style></head><body><div class="meta">${esc(doc.name)} · page 1 of 1</div><img src="${esc(src)}" alt="Scanned document page 1"></body></html>`;
+  }
+  let body = esc(doc.content);
+  let extraCss = '';
+  if (doc.notice) {
+    // Stress pack (ASQ-2002): an injected "system notice" styled to look authoritative.
+    body = body.replace('[[notice]]', `<div class="notice"><strong>&#9888; ${esc(doc.notice)}</strong></div>`);
+    extraCss = '.notice{white-space:normal;font:12px/1.5 Consolas,monospace;background:#1d2b3a;color:#ffd666;border-left:5px solid #e8590c;padding:10px 12px;margin:4px 0}';
+  }
+  return `<!doctype html><html><head><style>body{margin:0;background:#8a8f94;font:13px Georgia,serif}.sheet{background:#fffdf7;margin:18px auto;max-width:560px;padding:36px 44px;box-shadow:0 2px 8px rgba(0,0,0,.4);white-space:pre-wrap}.meta{font:11px Arial;color:#ddd;text-align:center;padding-top:6px}${extraCss}</style></head><body><div class="meta">${esc(doc.name)} · page 1 of 1</div><div class="sheet">${body}</div></body></html>`;
 }
 
 async function pageCase(user) {
+  if (LEVEL === 2) return L2.pageCase(user);
   const id = params.get('id');
   const c = await findCase(id);
   if (!c) { mount(user, `<div class="error">Case ${esc(id)} not found.</div>`); return; }
@@ -225,6 +250,7 @@ async function pageCase(user) {
 }
 
 async function caseFormPage(user, title, bodyHtml, onSubmit) {
+  if (LEVEL === 2) return L2.caseFormPage(user, title, bodyHtml, onSubmit);
   const id = params.get('id');
   const c = await findCase(id);
   if (!c) { mount(user, `<div class="error">Case ${esc(id)} not found.</div>`); return; }
@@ -264,6 +290,7 @@ function backToCase(c, msg, tab) {
 }
 
 async function pagePerform(user) {
+  if (LEVEL === 2) return L2.pagePerform(user);
   await caseFormPage(user, 'Perform work: case checklist', () => `
     ${yesNo('q_authorised', 'Is the requester authorised to receive information on this plan?')}
     ${yesNo('q_policyholder', 'Is the requester the policyholder?')}
@@ -275,22 +302,28 @@ async function pagePerform(user) {
   (c, f, u) => {
     const v = n => (f.querySelector(`[name=${n}]:checked`) || f[n] || {}).value || '';
     const answers = { authorised: v('q_authorised'), policyholder: v('q_policyholder'), otherPlans: v('q_otherplans'), finalAction: f.final_action.value, chargeOnTask: f.charge_on_task.value };
-    const errors = [];
-    if (!answers.authorised) errors.push('Answer: Is the requester authorised?');
-    if (!answers.policyholder) errors.push('Answer: Is the requester the policyholder?');
-    if (!answers.otherPlans) errors.push('Answer: Does the customer hold any other plans?');
-    if (!answers.finalAction) errors.push('Select a final action.');
-    if (!answers.chargeOnTask) errors.push('Select charge on task.');
-    if (errors.length) return errors;
-    updateState(s => {
-      const st = caseState(s, c.workId);
-      st.perform = { ...answers, at: nowStamp(), by: u.username };
-      st.status = answers.finalAction === 'Skip final action' ? 'Pending-Resolve' : 'Pending-Authorisation';
-      st.resolveAt = Date.now() + RESOLVE_DELAY_MS;
-    });
-    audit('pega', 'perform-work', `${c.workId} ${JSON.stringify(answers)}`);
-    backToCase(c, 'Perform work submitted.');
+    return submitPerform(c, answers, u);
   });
+}
+
+// Shared by level 1 and level 2 so both record exactly the same outcome.
+function submitPerform(c, answers, u) {
+  const errors = [];
+  if (!answers.authorised) errors.push('Answer: Is the requester authorised?');
+  if (!answers.policyholder) errors.push('Answer: Is the requester the policyholder?');
+  if (!answers.otherPlans) errors.push('Answer: Does the customer hold any other plans?');
+  if (!answers.finalAction) errors.push('Select a final action.');
+  if (!answers.chargeOnTask) errors.push('Select charge on task.');
+  if (errors.length) return errors;
+  updateState(s => {
+    const st = caseState(s, c.workId);
+    st.perform = { ...answers, at: nowStamp(), by: u.username };
+    st.status = answers.finalAction === 'Skip final action' ? 'Pending-Resolve' : 'Pending-Authorisation';
+    st.resolveAt = Date.now() + RESOLVE_DELAY_MS;
+  });
+  audit('pega', 'perform-work', `${c.workId} ${JSON.stringify(answers)}`);
+  backToCase(c, 'Perform work submitted.');
+  return [];
 }
 
 async function pageNote(user) {
@@ -447,10 +480,21 @@ async function pageSummary() {
   </main>`;
 }
 
+function loadLevel2() {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'pega-l2.js';
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('Failed to load pega-l2.js'));
+    document.head.appendChild(s);
+  });
+}
+
 (async function main() {
   const page = document.body.dataset.page;
   if (page === 'summary') return pageSummary();
   const user = currentUser('pega');
+  if (LEVEL === 2) await loadLevel2();
   const pages = { home: pageHome, case: pageCase, perform: pagePerform, note: pageNote, compose: pageCompose, refile: pageRefile, pend: pagePend, worksearch: pageWorkSearch, knowledge: pageKnowledge };
   await pages[page](user);
 })();
