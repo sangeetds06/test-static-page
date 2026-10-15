@@ -1,0 +1,16 @@
+{
+  "paragraphs": [
+    { "id": "SW-GEN-01", "topic": "Opening", "text": "Thank you for your [CHANNEL] dated [DATE] about plan [PLAN_NUMBER]." },
+    { "id": "SW-GEN-02", "topic": "Closing", "text": "If you have any further questions, please reply to this email quoting your plan number. Kind regards, Aegon Customer Services." },
+    { "id": "SW-CHG-01", "topic": "Charges", "text": "The charges currently applied to the plan are: [CHARGES_LIST]. Charges shown as a percentage are deducted from the fund value each year. Any rebate is credited to the plan as additional units." },
+    { "id": "SW-CHG-02", "topic": "Charges - adviser", "text": "An adviser charge of [ADVISER_RATE] a year is paid from the plan to [ADVISER_NAME] as agreed between the planholder and their adviser." },
+    { "id": "SW-VAL-01", "topic": "Value", "text": "The value of the plan on [VALUE_DATE] was [VALUE]. Values are not guaranteed and can go down as well as up." },
+    { "id": "SW-VAL-03", "topic": "Value - transfer / early exit", "text": "The transfer value of the plan on [VALUE_DATE] is [VALUE]. This is not guaranteed and will be recalculated on the date we receive all transfer requirements. No early exit charge applies to this plan." },
+    { "id": "SW-FND-01", "topic": "Funds", "text": "The plan is currently invested in: [FUNDS_LIST]. Where a fund is a 'mirror' fund, it invests in the underlying fund named, and you can find the factsheet for that underlying fund on our funds website." },
+    { "id": "SW-CON-01", "topic": "Contributions", "text": "The following contributions have been received: [CONTRIBUTIONS_LIST]." },
+    { "id": "SW-CON-02", "topic": "Contributions - workplace / salary sacrifice", "text": "Workplace pension contributions are paid monthly in arrears, so the contribution for [PERIOD] is due by [DUE_DATE]. Because a salary sacrifice arrangement is in place, contributions are paid as employer contributions and no employee contribution is shown." },
+    { "id": "SW-OTH-01", "topic": "Other plans", "text": "Our records show you also hold plan [OTHER_PLAN]. If you would like information on that plan as well, please let us know." },
+    { "id": "SW-AUTH-01", "topic": "No authority", "text": "We are unable to share information about this plan with you because we do not hold the planholder's authority for you to receive it. If the planholder would like us to deal with you, they can give us their written authority, or a registered power of attorney can be sent to us." },
+    { "id": "SW-HLD-01", "topic": "Holding reply", "text": "We are looking into your request and need to check some details with another team. We will write to you again within 10 working days." }
+  ]
+}

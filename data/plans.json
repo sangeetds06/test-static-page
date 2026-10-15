@@ -1,0 +1,278 @@
+{
+  "valuationDate": "15/10/2026",
+  "funds": {
+    "1012": { "name": "Aegon Managed Pn", "mnemonic": "AMP", "mirrorOf": null, "range": "Personal pension" },
+    "1040": { "name": "Aegon Cash Pn", "mnemonic": "ACP", "mirrorOf": null, "range": "Personal pension" },
+    "1105": { "name": "Aegon UK Equity Pn", "mnemonic": "AUE", "mirrorOf": null, "range": "Personal pension" },
+    "2210": { "name": "Aegon Ethical Equity Pn", "mnemonic": "AEE", "mirrorOf": null, "range": "Stakeholder" },
+    "2214": { "name": "Aegon Global Bond Pn", "mnemonic": "AGB", "mirrorOf": null, "range": "Stakeholder" },
+    "3301": { "name": "Aegon Property Pn", "mnemonic": "APR", "mirrorOf": null, "range": "Personal pension" },
+    "4410": { "name": "Aegon Lifestyle Universal Pn", "mnemonic": "ALU", "mirrorOf": null, "range": "Workplace" },
+    "7731": { "name": "BlackRock (Aegon) Consensus Pn Mirror", "mnemonic": "BCF", "mirrorOf": "BlackRock Consensus Fund", "range": "Stakeholder" },
+    "7744": { "name": "HSBC (Aegon) FTSE All-World Index Pn Mirror", "mnemonic": "HAW", "mirrorOf": "HSBC FTSE All-World Index Fund", "range": "Stakeholder" },
+    "7760": { "name": "Fidelity (Aegon) American Pn Mirror", "mnemonic": "FAM", "mirrorOf": "Fidelity American Fund", "range": "Stakeholder" },
+    "7782": { "name": "Jupiter (Aegon) Merlin Balanced Pn Mirror", "mnemonic": "JMB", "mirrorOf": "Jupiter Merlin Balanced Portfolio", "range": "Stakeholder" },
+    "7790": { "name": "Baillie Gifford (Aegon) Managed Pn Mirror", "mnemonic": "BGM", "mirrorOf": "Baillie Gifford Managed Fund", "range": "Stakeholder" }
+  },
+  "plans": {
+    "4521873": {
+      "planRef": "4521873",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "9",
+      "status": "Live",
+      "startDate": "01/06/2004",
+      "holder": { "name": "Mrs Margaret Ellison", "niNumber": "QQ123456A", "dob": "14/03/1961", "address": "27 Orchard Way, Harrogate, HG2 7PL" },
+      "adviser": { "agency": "AG-5521", "name": "Bright Path Financial", "since": "12/02/2018" },
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [],
+      "charges": [
+        { "charge": "Annual management charge", "rate": "0.75%", "basis": "% of fund value p.a.", "applies": true, "notes": "" },
+        { "charge": "Policy fee", "rate": "£1.50", "basis": "per month", "applies": true, "notes": "" },
+        { "charge": "Additional fund expenses", "rate": "", "basis": "", "applies": false, "notes": "" },
+        { "charge": "Adviser charge (trail commission)", "rate": "0.50%", "basis": "% of fund value p.a.", "applies": true, "notes": "Paid to agency AG-5521" },
+        { "charge": "Large fund rebate", "rate": "-0.10%", "basis": "% of fund value p.a. (credit)", "applies": true, "notes": "Rebate - credited as extra units" },
+        { "charge": "Early exit charge", "rate": "", "basis": "", "applies": false, "notes": "" }
+      ],
+      "historicCharges": [
+        { "charge": "Initial charge", "rate": "3.00%", "from": "01/06/2004", "to": "31/05/2015" }
+      ],
+      "valuations": [
+        { "date": "15/10/2026", "funds": [ { "fund": "1012", "units": 21450.1180, "price": 3.4120 }, { "fund": "1105", "units": 9810.5520, "price": 4.0210 } ] }
+      ],
+      "investments": [
+        { "fund": "1012", "status": "Current" },
+        { "fund": "1105", "status": "Current" }
+      ],
+      "premiums": [],
+      "transactions": [
+        { "date": "01/06/2026", "type": "Rebate units", "amount": "£31.20" },
+        { "date": "01/05/2026", "type": "Policy fee", "amount": "-£1.50" }
+      ]
+    },
+    "3318840": {
+      "planRef": "3318840",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "10",
+      "status": "Live",
+      "startDate": "15/03/2009",
+      "holder": { "name": "Mr David Okafor", "niNumber": "QQ234567B", "dob": "02/09/1970", "address": "11 Bramble Close, Reading, RG4 8TN" },
+      "adviser": null,
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [],
+      "charges": [
+        { "charge": "Annual management charge", "rate": "1.00%", "basis": "% of fund value p.a.", "applies": true, "notes": "" },
+        { "charge": "Early exit charge", "rate": "", "basis": "", "applies": false, "notes": "" }
+      ],
+      "historicCharges": [],
+      "valuations": [
+        { "date": "05/04/2024", "funds": [ { "fund": "1012", "units": 10120.4400, "price": 2.9850 }, { "fund": "1105", "units": 5040.2000, "price": 3.5717 } ] },
+        { "date": "15/10/2026", "funds": [ { "fund": "1012", "units": 10120.4400, "price": 3.4120 }, { "fund": "1105", "units": 4500.0000, "price": 4.0838 } ] }
+      ],
+      "investments": [
+        { "fund": "1012", "status": "Current" },
+        { "fund": "1105", "status": "Current" }
+      ],
+      "premiums": [],
+      "transactions": []
+    },
+    "712345": {
+      "planRef": "712345",
+      "productName": "Aegon Stakeholder Pension",
+      "planVersion": "11",
+      "status": "Live",
+      "startDate": "01/09/2012",
+      "holder": { "name": "Ms Priya Raman", "niNumber": "QQ345678C", "dob": "21/06/1984", "address": "Flat 3, 19 Quay Street, Bristol, BS1 6DZ" },
+      "adviser": null,
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [],
+      "charges": [
+        { "charge": "Annual management charge", "rate": "1.00%", "basis": "% of fund value p.a.", "applies": true, "notes": "" }
+      ],
+      "historicCharges": [],
+      "valuations": [
+        { "date": "15/10/2026", "funds": [
+          { "fund": "7731", "units": 8210.3310, "price": 2.1145 },
+          { "fund": "2210", "units": 3120.0000, "price": 1.8830 },
+          { "fund": "7744", "units": 1505.2210, "price": 3.0021 }
+        ] }
+      ],
+      "investments": [
+        { "fund": "1012", "status": "Closed", "closedDate": "14/02/2015" },
+        { "fund": "3301", "status": "Closed", "closedDate": "14/02/2015" },
+        { "fund": "1105", "status": "Closed", "closedDate": "03/07/2017" },
+        { "fund": "7760", "status": "Closed", "closedDate": "03/07/2017" },
+        { "fund": "2214", "status": "Closed", "closedDate": "19/11/2019" },
+        { "fund": "7782", "status": "Closed", "closedDate": "19/11/2019" },
+        { "fund": "7790", "status": "Closed", "closedDate": "22/01/2021" },
+        { "fund": "4410", "status": "Closed", "closedDate": "22/01/2021" },
+        { "fund": "1040", "status": "Closed", "closedDate": "08/08/2023" },
+        { "fund": "7731", "status": "Current" },
+        { "fund": "2210", "status": "Current" },
+        { "fund": "7744", "status": "Current" }
+      ],
+      "premiums": [],
+      "transactions": []
+    },
+    "6650021": {
+      "planRef": "6650021",
+      "productName": "Aegon Group Personal Pension (workplace)",
+      "planVersion": "11",
+      "status": "Live",
+      "startDate": "01/04/2019",
+      "holder": { "name": "Mr Thomas Whitfield", "niNumber": "QQ456789D", "dob": "30/01/1990", "address": "8 Larch Road, Doncaster, DN2 6RE" },
+      "adviser": null,
+      "employer": { "name": "Northgate Logistics Ltd", "scheme": "Northgate Logistics Group Pension", "schemeRef": "GPP-30418", "frequency": "Monthly in arrears" },
+      "authorities": [],
+      "salarySacrifice": "Yes",
+      "linkedPlans": [],
+      "planNotes": [ { "date": "01/04/2019", "text": "Salary sacrifice arrangement in place: employee contributions are paid as employer contributions." } ],
+      "charges": [
+        { "charge": "Annual management charge", "rate": "0.50%", "basis": "% of fund value p.a.", "applies": true, "notes": "" }
+      ],
+      "historicCharges": [],
+      "valuations": [
+        { "date": "15/10/2026", "funds": [ { "fund": "4410", "units": 6120.7700, "price": 2.4410 } ] }
+      ],
+      "investments": [ { "fund": "4410", "status": "Current" } ],
+      "premiums": [
+        { "period": "April 2026", "due": "22/05/2026", "received": "20/05/2026", "employee": "£0.00", "employer": "£312.40", "type": "Regular (salary sacrifice)" },
+        { "period": "May 2026", "due": "22/06/2026", "received": "19/06/2026", "employee": "£0.00", "employer": "£312.40", "type": "Regular (salary sacrifice)" },
+        { "period": "June 2026", "due": "22/07/2026", "received": "21/07/2026", "employee": "£0.00", "employer": "£312.40", "type": "Regular (salary sacrifice)" },
+        { "period": "July 2026", "due": "22/08/2026", "received": "20/08/2026", "employee": "£0.00", "employer": "£312.40", "type": "Regular (salary sacrifice)" },
+        { "period": "August 2026", "due": "22/09/2026", "received": "18/09/2026", "employee": "£0.00", "employer": "£312.40", "type": "Regular (salary sacrifice)" },
+        { "period": "September 2026", "due": "22/10/2026", "received": "", "employee": "", "employer": "", "type": "Regular (salary sacrifice) - not yet received" }
+      ],
+      "transactions": []
+    },
+    "2210987": {
+      "planRef": "2210987",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "8",
+      "status": "Live",
+      "startDate": "12/10/1998",
+      "holder": { "name": "Mrs Eileen Grant", "niNumber": "QQ567890A", "dob": "11/12/1949", "address": "3 Willow Lane, Cromer, NR27 9DD" },
+      "adviser": null,
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [],
+      "charges": [ { "charge": "Annual management charge", "rate": "1.00%", "basis": "% of fund value p.a.", "applies": true, "notes": "" } ],
+      "historicCharges": [],
+      "valuations": [ { "date": "15/10/2026", "funds": [ { "fund": "1012", "units": 18990.0000, "price": 3.4120 } ] } ],
+      "investments": [ { "fund": "1012", "status": "Current" } ],
+      "premiums": [],
+      "transactions": []
+    },
+    "5587310": {
+      "planRef": "5587310",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "10",
+      "status": "Live",
+      "startDate": "03/05/2001",
+      "holder": { "name": "Mr Robert Hale", "niNumber": "QQ778899D", "dob": "19/11/1972", "address": "Rose Cottage, Ludlow, SY8 1AA" },
+      "adviser": null,
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [],
+      "charges": [
+        { "charge": "Annual management charge", "rate": "1.00%", "basis": "% of fund value p.a.", "applies": true, "notes": "" },
+        { "charge": "Policy fee", "rate": "£2.00", "basis": "per month", "applies": true, "notes": "" }
+      ],
+      "historicCharges": [],
+      "valuations": [ { "date": "15/10/2026", "funds": [ { "fund": "1012", "units": 7300.0000, "price": 3.4120 } ] } ],
+      "investments": [ { "fund": "1012", "status": "Current" } ],
+      "premiums": [],
+      "transactions": []
+    },
+    "7734002": {
+      "planRef": "7734002",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "11",
+      "status": "Live",
+      "startDate": "20/01/2011",
+      "holder": { "name": "Ms Hannah Price", "niNumber": "QQ678901C", "dob": "05/05/1976", "address": "29 Meadow Bank, Exeter, EX4 1LT" },
+      "adviser": null,
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [],
+      "planNotes": [],
+      "charges": [ { "charge": "Annual management charge", "rate": "1.00%", "basis": "% of fund value p.a.", "applies": true, "notes": "" } ],
+      "historicCharges": [],
+      "valuations": [ { "date": "15/10/2026", "funds": [
+        { "fund": "1012", "units": 12044.5000, "price": 3.4120 },
+        { "fund": "1040", "units": -152.3311, "price": 1.0512 }
+      ] } ],
+      "investments": [ { "fund": "1012", "status": "Current" }, { "fund": "1040", "status": "Current" } ],
+      "premiums": [],
+      "transactions": [ { "date": "30/09/2026", "type": "Switch out (Aegon Cash Pn) - reversal pending", "amount": "-£160.13" } ]
+    },
+    "8812456": {
+      "planRef": "8812456",
+      "productName": "Aegon Personal Pension",
+      "planVersion": "11",
+      "status": "Live",
+      "startDate": "01/02/2016",
+      "holder": { "name": "Mr James Corrigan", "niNumber": "QQ789012D", "dob": "17/08/1968", "address": "41 Cliff Road, Scarborough, YO11 2HQ" },
+      "adviser": { "agency": "AG-7720", "name": "Harbour Wealth", "since": "01/02/2016" },
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [ { "planRef": "8812457", "productName": "Aegon Retirement Account", "status": "Live" } ],
+      "planNotes": [],
+      "charges": [
+        { "charge": "Annual management charge", "rate": "0.60%", "basis": "% of fund value p.a.", "applies": true, "notes": "" },
+        { "charge": "Policy fee", "rate": "", "basis": "", "applies": false, "notes": "" },
+        { "charge": "Adviser charge (ongoing)", "rate": "0.40%", "basis": "% of fund value p.a.", "applies": true, "notes": "Paid to agency AG-7720" }
+      ],
+      "historicCharges": [],
+      "valuations": [ { "date": "15/10/2026", "funds": [
+        { "fund": "7790", "units": 15210.0000, "price": 2.7740 },
+        { "fund": "2214", "units": 6600.5000, "price": 1.3315 }
+      ] } ],
+      "investments": [ { "fund": "7790", "status": "Current" }, { "fund": "2214", "status": "Current" } ],
+      "premiums": [
+        { "period": "April 2026", "due": "01/04/2026", "received": "01/04/2026", "employee": "£400.00", "employer": "", "type": "Regular (direct debit)" },
+        { "period": "May 2026", "due": "01/05/2026", "received": "01/05/2026", "employee": "£400.00", "employer": "", "type": "Regular (direct debit)" },
+        { "period": "June 2026", "due": "01/06/2026", "received": "01/06/2026", "employee": "£400.00", "employer": "", "type": "Regular (direct debit)" },
+        { "period": "July 2026", "due": "01/07/2026", "received": "01/07/2026", "employee": "£400.00", "employer": "", "type": "Regular (direct debit)" },
+        { "period": "August 2026", "due": "01/08/2026", "received": "01/08/2026", "employee": "£400.00", "employer": "", "type": "Regular (direct debit)" },
+        { "period": "September 2026", "due": "01/09/2026", "received": "01/09/2026", "employee": "£450.00", "employer": "", "type": "Regular (direct debit) - increased" },
+        { "period": "October 2026", "due": "01/10/2026", "received": "01/10/2026", "employee": "£450.00", "employer": "", "type": "Regular (direct debit)" }
+      ],
+      "transactions": []
+    },
+    "8812457": {
+      "planRef": "8812457",
+      "productName": "Aegon Retirement Account",
+      "planVersion": "11",
+      "status": "Live",
+      "startDate": "15/05/2020",
+      "holder": { "name": "Mr James Corrigan", "niNumber": "QQ789012D", "dob": "17/08/1968", "address": "41 Cliff Road, Scarborough, YO11 2HQ" },
+      "adviser": { "agency": "AG-7720", "name": "Harbour Wealth", "since": "15/05/2020" },
+      "employer": null,
+      "authorities": [],
+      "salarySacrifice": "No",
+      "linkedPlans": [ { "planRef": "8812456", "productName": "Aegon Personal Pension", "status": "Live" } ],
+      "planNotes": [],
+      "charges": [ { "charge": "Annual management charge", "rate": "0.45%", "basis": "% of fund value p.a.", "applies": true, "notes": "" } ],
+      "historicCharges": [],
+      "valuations": [ { "date": "15/10/2026", "funds": [ { "fund": "7744", "units": 4100.0000, "price": 3.0021 } ] } ],
+      "investments": [ { "fund": "7744", "status": "Current" } ],
+      "premiums": [],
+      "transactions": []
+    }
+  }
+}

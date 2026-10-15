@@ -1,0 +1,57 @@
+* { box-sizing: border-box; }
+body { margin: 0; font: 13px/1.45 "Segoe UI", Arial, sans-serif; color: #1f2933; background: #eef1f5; }
+a { color: #1b5fa8; }
+h1 { font-size: 18px; margin: 0 0 12px; }
+h2 { font-size: 15px; margin: 18px 0 8px; }
+h3 { font-size: 13px; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: .04em; color: #52606d; }
+table { border-collapse: collapse; width: 100%; background: #fff; }
+th, td { border: 1px solid #d3d9e0; padding: 5px 8px; text-align: left; vertical-align: top; }
+th { background: #e4e9ef; font-weight: 600; }
+input[type=text], input[type=password], select, textarea { font: inherit; padding: 5px 7px; border: 1px solid #9aa5b1; border-radius: 3px; background: #fff; }
+textarea { width: 100%; min-height: 90px; }
+button, .btn { font: inherit; padding: 5px 14px; border: 1px solid #1b5fa8; background: #1b5fa8; color: #fff; border-radius: 3px; cursor: pointer; text-decoration: none; display: inline-block; }
+button.secondary, .btn.secondary { background: #fff; color: #1b5fa8; }
+.error { color: #b42318; background: #fde8e7; border: 1px solid #f4b4ae; padding: 6px 10px; margin: 8px 0; }
+.success { color: #106b35; background: #e3f6ea; border: 1px solid #a6dcb9; padding: 6px 10px; margin: 8px 0; }
+.muted { color: #7b8794; }
+.page { padding: 16px 20px; }
+.panel { background: #fff; border: 1px solid #d3d9e0; padding: 12px 14px; margin-bottom: 14px; }
+.field-row { margin: 8px 0; }
+.field-row label { display: inline-block; min-width: 200px; font-weight: 600; }
+.pre { white-space: pre-wrap; font-family: Consolas, monospace; font-size: 12px; background: #f7f9fb; border: 1px solid #e1e6ec; padding: 10px; }
+
+/* Pega-like */
+.pega-top { background: #1d2b3a; color: #fff; display: flex; align-items: center; gap: 18px; padding: 8px 20px; }
+.pega-top .brand { font-weight: 700; letter-spacing: .03em; }
+.pega-top a { color: #c9d8e8; text-decoration: none; }
+.pega-top .spacer { flex: 1; }
+.case-header { background: #fff; border: 1px solid #d3d9e0; border-left: 4px solid #1b5fa8; padding: 10px 14px; margin-bottom: 12px; }
+.case-header dl { display: grid; grid-template-columns: repeat(4, auto 1fr); gap: 4px 10px; margin: 6px 0 0; }
+.case-header dt { font-weight: 600; color: #52606d; }
+.case-header dd { margin: 0; }
+.status-badge { display: inline-block; padding: 1px 8px; border-radius: 10px; background: #e4e9ef; font-weight: 600; }
+.tabs { display: flex; gap: 2px; border-bottom: 2px solid #1b5fa8; margin-top: 8px; }
+.tabs [role=tab] { background: #dfe5ec; color: #1f2933; border: 1px solid #c3ccd6; border-bottom: none; border-radius: 3px 3px 0 0; padding: 6px 14px; }
+.tabs [role=tab][aria-selected=true] { background: #1b5fa8; color: #fff; }
+[role=tabpanel] { background: #fff; border: 1px solid #d3d9e0; border-top: none; padding: 12px 14px; }
+.actions-menu { position: relative; display: inline-block; }
+.actions-menu ul { position: absolute; right: 0; top: 100%; list-style: none; margin: 2px 0 0; padding: 4px 0; background: #fff; border: 1px solid #9aa5b1; min-width: 220px; z-index: 5; box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+.actions-menu li a { display: block; padding: 6px 12px; color: #1f2933; text-decoration: none; }
+.actions-menu li a:hover { background: #eef3fa; }
+.toolbar { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+.doc-viewer { width: 100%; height: 340px; border: 1px solid #9aa5b1; background: #fafafa; }
+
+/* SCM-like */
+body.scm { background: #f2f2ec; font-family: Tahoma, Verdana, sans-serif; font-size: 12px; }
+.scm-top { background: #2f4f3a; color: #fff; padding: 6px 16px; display: flex; gap: 16px; align-items: center; }
+.scm-top a { color: #d6e6d9; }
+.scm-top .spacer { flex: 1; }
+.scm-layout { display: flex; min-height: calc(100vh - 34px); }
+.scm-menu { width: 200px; background: #dfe4d6; border-right: 1px solid #b7bfa8; padding: 10px 0; }
+.scm-menu a { display: block; padding: 5px 14px; color: #253b2c; text-decoration: none; }
+.scm-menu a.active { background: #2f4f3a; color: #fff; }
+.scm-main { flex: 1; padding: 12px 16px; }
+.scm-plan-bar { background: #fff; border: 1px solid #b7bfa8; padding: 6px 10px; margin-bottom: 10px; }
+body.scm th { background: #dfe4d6; }
+body.scm button { background: #2f4f3a; border-color: #2f4f3a; }
+.neg { color: #b42318; font-weight: 600; }

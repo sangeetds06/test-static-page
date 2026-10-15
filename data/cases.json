@@ -1,0 +1,317 @@
+{
+  "cases": [
+    {
+      "workId": "ASQ-1001",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing",
+      "planNumber": "0904521873",
+      "status": "New",
+      "priority": 90,
+      "created": "08/10/2026 09:14",
+      "slaDue": "22/10/2026",
+      "channel": "Email",
+      "source": "IFA",
+      "requester": {
+        "name": "Daniel Shaw",
+        "organisation": "Bright Path Financial",
+        "agencyNumber": "AG-5521",
+        "email": "daniel.shaw@brightpath.example",
+        "address": "4 Mercer Court, Leeds, LS1 4AB"
+      },
+      "customer": {
+        "name": "Margaret Ellison",
+        "niNumber": "QQ 12 34 56 A",
+        "dob": "14/03/1961",
+        "address": "27 Orchard Way, Harrogate, HG2 7PL",
+        "email": "m.ellison@mail.example"
+      },
+      "replyTo": "daniel.shaw@brightpath.example",
+      "documentDetails": null,
+      "documents": [
+        {
+          "id": "DOC-55120",
+          "name": "Email from IFA - charges query.eml",
+          "type": "Email",
+          "received": "08/10/2026",
+          "content": "From: Daniel Shaw <daniel.shaw@brightpath.example>\nTo: servicing@aegon-mock.example\nSubject: Plan 0904521873 - Mrs M Ellison - charges\n\nGood morning,\n\nWe act for Mrs Margaret Ellison (DOB 14/03/1961) and are reviewing her pension ahead of her annual meeting. Please could you confirm every charge currently applied to plan 0904521873, including any adviser charges paid to us and any rebates.\n\nKind regards,\nDaniel Shaw\nBright Path Financial (agency AG-5521)"
+        }
+      ],
+      "caseNotes": [
+        { "date": "08/10/2026 09:14", "author": "Indexing (offshore)", "text": "Email indexed against plan 0904521873. Process: Answer Service Query." }
+      ],
+      "markers": []
+    },
+    {
+      "workId": "ASQ-1002",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing",
+      "planNumber": "0903318840",
+      "status": "New",
+      "priority": 85,
+      "created": "09/10/2026 11:02",
+      "slaDue": "23/10/2026",
+      "channel": "DCE",
+      "source": "Planholder",
+      "requester": {
+        "name": "David Okafor",
+        "organisation": "",
+        "email": "d.okafor@mail.example",
+        "address": "11 Bramble Close, Reading, RG4 8TN"
+      },
+      "customer": {
+        "name": "David Okafor",
+        "niNumber": "QQ 23 45 67 B",
+        "dob": "02/09/1970",
+        "address": "11 Bramble Close, Reading, RG4 8TN",
+        "email": "d.okafor@mail.example"
+      },
+      "replyTo": "d.okafor@mail.example",
+      "documentDetails": "Online form (DCE) - Query about my plan\n\nPlan number: 0903318840\nName: David Okafor\n\nMy question: What was my pension worth on 5 April 2024? I am also thinking about moving it to another provider, so please tell me what the transfer value is today.",
+      "documents": [],
+      "caseNotes": [
+        { "date": "09/10/2026 11:02", "author": "System", "text": "Case created from DCE online form submission." }
+      ],
+      "markers": []
+    },
+    {
+      "workId": "ASQ-1003",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing",
+      "planNumber": "0900712345",
+      "status": "New",
+      "priority": 80,
+      "created": "09/10/2026 14:40",
+      "slaDue": "23/10/2026",
+      "channel": "Secure self-service",
+      "source": "Planholder",
+      "requester": {
+        "name": "Priya Raman",
+        "organisation": "",
+        "email": "priya.raman@mail.example",
+        "address": "Flat 3, 19 Quay Street, Bristol, BS1 6DZ"
+      },
+      "customer": {
+        "name": "Priya Raman",
+        "niNumber": "QQ 34 56 78 C",
+        "dob": "21/06/1984",
+        "address": "Flat 3, 19 Quay Street, Bristol, BS1 6DZ",
+        "email": "priya.raman@mail.example"
+      },
+      "replyTo": "priya.raman@mail.example",
+      "documentDetails": "Secure message from customer website\n\nSubject: Which funds am I in?\n\nHi, can you tell me which funds my pension is currently invested in? One of them has a long name with 'Mirror' in it - what is the actual underlying fund and where can I find its factsheet?\n\nThanks, Priya",
+      "documents": [],
+      "caseNotes": [
+        { "date": "09/10/2026 14:40", "author": "System", "text": "Case created from secure self-service message." }
+      ],
+      "markers": []
+    },
+    {
+      "workId": "ASQ-1004",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing - Workplace",
+      "planNumber": "0906650021",
+      "status": "New",
+      "priority": 75,
+      "created": "10/10/2026 10:21",
+      "slaDue": "24/10/2026",
+      "channel": "Contact centre",
+      "source": "Employer",
+      "requester": {
+        "name": "Lisa Marsh (Payroll)",
+        "organisation": "Northgate Logistics Ltd",
+        "email": "payroll@northgate-logistics.example",
+        "address": "Unit 7, Northgate Park, Doncaster, DN4 5HX"
+      },
+      "customer": {
+        "name": "Thomas Whitfield",
+        "niNumber": "QQ 45 67 89 D",
+        "dob": "30/01/1990",
+        "address": "8 Larch Road, Doncaster, DN2 6RE",
+        "email": "tom.whitfield@mail.example"
+      },
+      "replyTo": "payroll@northgate-logistics.example",
+      "documentDetails": "Contact centre call note (agent: R. Patel)\n\nCaller: Lisa Marsh, Payroll, Northgate Logistics Ltd (scheme employer).\nEmployee Thomas Whitfield says his September 2026 contribution is not showing on his plan, and that his contributions look lower than his payslip suggests. Employer asks us to confirm what has been received and explain. Please reply to payroll@northgate-logistics.example.",
+      "documents": [],
+      "caseNotes": [
+        { "date": "10/10/2026 10:21", "author": "Contact centre", "text": "Call note captured. Workplace scheme: Northgate Logistics Group Pension." }
+      ],
+      "markers": []
+    },
+    {
+      "workId": "ASQ-1005",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing",
+      "planNumber": "0902210987",
+      "status": "New",
+      "priority": 70,
+      "created": "10/10/2026 15:55",
+      "slaDue": "24/10/2026",
+      "channel": "Email",
+      "source": "Third party",
+      "requester": {
+        "name": "Sophie Grant",
+        "organisation": "",
+        "relationship": "Daughter",
+        "email": "sophie.grant@mail.example",
+        "address": "52 Kingsway, Norwich, NR2 3QE"
+      },
+      "customer": {
+        "name": "Eileen Grant",
+        "niNumber": "QQ 56 78 90 A",
+        "dob": "11/12/1949",
+        "address": "3 Willow Lane, Cromer, NR27 9DD",
+        "email": ""
+      },
+      "replyTo": "sophie.grant@mail.example",
+      "documentDetails": null,
+      "documents": [
+        {
+          "id": "DOC-55188",
+          "name": "Email from daughter - plan value.eml",
+          "type": "Email",
+          "received": "10/10/2026",
+          "content": "From: Sophie Grant <sophie.grant@mail.example>\nTo: servicing@aegon-mock.example\nSubject: My mother's pension 0902210987\n\nHello,\n\nI help my mum, Eileen Grant, with her paperwork. Could you please tell me how much her pension plan 0902210987 is worth at the moment?\n\nThank you,\nSophie Grant (daughter)"
+        }
+      ],
+      "caseNotes": [
+        { "date": "10/10/2026 15:55", "author": "Indexing (offshore)", "text": "Email indexed against plan 0902210987." }
+      ],
+      "markers": []
+    },
+    {
+      "workId": "ASQ-1006",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing",
+      "planNumber": "0905587310",
+      "status": "New",
+      "priority": 65,
+      "created": "11/10/2026 08:47",
+      "slaDue": "25/10/2026",
+      "channel": "Post",
+      "source": "Planholder",
+      "requester": {
+        "name": "Robert Hale",
+        "organisation": "",
+        "email": "",
+        "address": "16 Station Road, Shrewsbury, SY1 2PQ"
+      },
+      "customer": {
+        "name": "Robert Hale",
+        "niNumber": "QQ 44 55 66 B",
+        "dob": "02/07/1958",
+        "address": "16 Station Road, Shrewsbury, SY1 2PQ",
+        "email": ""
+      },
+      "replyTo": "",
+      "documentDetails": null,
+      "documents": [
+        {
+          "id": "DOC-55203",
+          "name": "Scanned letter - 11-10-2026.tif",
+          "type": "Scanned letter",
+          "received": "11/10/2026",
+          "content": "16 Station Road\nShrewsbury\nSY1 2PQ\n\n6 October 2026\n\nDear Sir or Madam,\n\nRe: my pension plan\n\nI would like a full breakdown of the charges I am paying on my personal pension. My date of birth is 2 July 1958 and my National Insurance number is QQ445566B.\n\nPlease reply by post.\n\nYours faithfully,\n\nRobert Hale"
+        }
+      ],
+      "caseNotes": [
+        { "date": "11/10/2026 08:47", "author": "Indexing (offshore)", "text": "Post scanned and indexed against plan 0905587310 (matched on name)." }
+      ],
+      "markers": []
+    },
+    {
+      "workId": "ASQ-1007",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing",
+      "planNumber": "0907734002",
+      "status": "New",
+      "priority": 60,
+      "created": "12/10/2026 13:12",
+      "slaDue": "26/10/2026",
+      "channel": "DCE",
+      "source": "Planholder",
+      "requester": {
+        "name": "Hannah Price",
+        "organisation": "",
+        "email": "hannah.price@mail.example",
+        "address": "29 Meadow Bank, Exeter, EX4 1LT"
+      },
+      "customer": {
+        "name": "Hannah Price",
+        "niNumber": "QQ 67 89 01 C",
+        "dob": "05/05/1976",
+        "address": "29 Meadow Bank, Exeter, EX4 1LT",
+        "email": "hannah.price@mail.example"
+      },
+      "replyTo": "hannah.price@mail.example",
+      "documentDetails": "Online form (DCE) - Query about my plan\n\nPlan number: 0907734002\nName: Hannah Price\n\nMy question: Please can you tell me the current value of my pension?",
+      "documents": [],
+      "caseNotes": [
+        { "date": "12/10/2026 13:12", "author": "System", "text": "Case created from DCE online form submission." }
+      ],
+      "markers": []
+    },
+    {
+      "workId": "ASQ-1008",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing",
+      "planNumber": "0908812456",
+      "status": "New",
+      "priority": 55,
+      "created": "13/10/2026 09:30",
+      "slaDue": "27/10/2026",
+      "channel": "Email",
+      "source": "IFA",
+      "requester": {
+        "name": "Amira Hussain",
+        "organisation": "Harbour Wealth",
+        "agencyNumber": "AG-7720",
+        "email": "amira@harbourwealth.example",
+        "address": "2 Dock Street, Hull, HU1 3DL"
+      },
+      "customer": {
+        "name": "James Corrigan",
+        "niNumber": "QQ 78 90 12 D",
+        "dob": "17/08/1968",
+        "address": "41 Cliff Road, Scarborough, YO11 2HQ",
+        "email": "j.corrigan@mail.example"
+      },
+      "replyTo": "amira@harbourwealth.example",
+      "documentDetails": null,
+      "documents": [
+        {
+          "id": "DOC-55240",
+          "name": "Email from IFA - review pack.eml",
+          "type": "Email",
+          "received": "13/10/2026",
+          "content": "From: Amira Hussain <amira@harbourwealth.example>\nTo: servicing@aegon-mock.example\nSubject: Review information - Mr J Corrigan - 0908812456\n\nHi team,\n\nFor our client James Corrigan's annual review, please provide:\n1. The charges currently applied to the plan.\n2. The funds the plan is invested in, with current values.\n3. Details of the last six contributions received.\n\nMany thanks,\nAmira Hussain\nHarbour Wealth (agency AG-7720)"
+        }
+      ],
+      "caseNotes": [
+        { "date": "13/10/2026 09:30", "author": "Indexing (offshore)", "text": "Email indexed against plan 0908812456." },
+        { "date": "13/10/2026 09:31", "author": "Indexing (offshore)", "text": "Files uploaded: Fact-find summary.pdf (adviser upload via DCE)." }
+      ],
+      "markers": []
+    },
+    {
+      "workId": "ASQ-0877",
+      "process": "Answer Service Query",
+      "subProcess": "Servicing",
+      "planNumber": "0904521873",
+      "status": "Resolved-Completed",
+      "priority": 0,
+      "created": "02/03/2026 10:05",
+      "slaDue": "16/03/2026",
+      "channel": "Email",
+      "source": "IFA",
+      "requester": { "name": "Daniel Shaw", "organisation": "Bright Path Financial", "agencyNumber": "AG-5521", "email": "daniel.shaw@brightpath.example", "address": "" },
+      "customer": { "name": "Margaret Ellison", "niNumber": "QQ 12 34 56 A", "dob": "14/03/1961", "address": "27 Orchard Way, Harrogate, HG2 7PL", "email": "m.ellison@mail.example" },
+      "replyTo": "daniel.shaw@brightpath.example",
+      "documentDetails": "Request for current plan value (answered 05/03/2026).",
+      "documents": [],
+      "caseNotes": [
+        { "date": "05/03/2026 15:20", "author": "J. Turner", "text": "Value provided to IFA. Case closed." }
+      ],
+      "markers": []
+    }
+  ]
+}
